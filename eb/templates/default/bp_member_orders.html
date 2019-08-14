@@ -183,7 +183,7 @@
                                 {% if is_old %}
                                     <!-- 昔の注文書は作成できないように -->
                                 {% else %}
-                                    <a href="javascript:show_dialog('bp_order_gen_{{ project_member.pk }}_{{ year }}_{{ month|stringformat:'02d' }}');$('#id_publish_date_{{project_member.pk}}{{year}}{{month}}').datepicker();" target="_blank">注文書新規作成</a>
+                                    <a href="javascript:show_dialog('bp_order_gen_{{ project_member.pk }}_{{ year }}_{{ month|stringformat:'02d' }}');$('#id_publish_date_{{project_member.pk}}{{year}}{{month}}').datepicker();">注文書新規作成</a>
                                 {% endif %}
                                 <div id="bp_order_gen_{{ project_member.pk }}_{{ year }}_{{ month|stringformat:'02d' }}" class="dialog" style="overflow-y: hidden;">
                                     <form method="get" action="{% url 'download_bp_order' project_member.pk year month|stringformat:'02d' %}" target="_blank">

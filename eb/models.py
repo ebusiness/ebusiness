@@ -2782,7 +2782,16 @@ class ProjectMember(BaseModel):
         max_months = self.end_date.year * 12 + self.end_date.month
         min_months = self.start_date.year * 12 + self.start_date.month
         today = datetime.date.today()
-        next_month = common.add_months(today, 1)
+        nextNum = 1
+
+        # 年末まで注文作成ため、一時対応　start
+        if today.strftime('%Y') == '2019':
+            nextNum = 12 - int(today.strftime('%m'))
+            if nextNum == 0:
+                nextNum = 1
+        # 年末まで注文作成ため、一時対応　end
+        
+        next_month = common.add_months(today, nextNum)
         max_date = next_month \
             if self.end_date and next_month.strftime('%Y%m') <= self.end_date.strftime('%Y%m') else today
         for i in range(max_months - min_months, -1, -1):

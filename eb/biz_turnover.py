@@ -101,6 +101,7 @@ def get_turnover_sections(ym):
 
 def sections_turnover_monthly(ym):
     """部署別の売上を取得する。
+    /eb/turnover/charts/201907.html
 
     :param ym: 対象年月
     :return:
@@ -125,6 +126,7 @@ def sections_turnover_monthly(ym):
 
 def salesperson_turnover_monthly(ym):
     """営業員別の売上を取得する。
+    /eb/turnover/charts/201907.html
 
     :param ym: 対象年月
     :return:

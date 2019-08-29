@@ -299,7 +299,8 @@ CHOICE_ATTENDANCE_TYPE = (
 CHOICE_TAX_RATE = (
     (Decimal('0.00'), "税なし"),
     (Decimal('0.05'), "5％"),
-    (Decimal('0.08'), "8％")
+    (Decimal('0.08'), "8％"),
+    (Decimal('0.10'), "10％")
 )
 CHOICE_DECIMAL_TYPE = (
     ('0', "四捨五入"),

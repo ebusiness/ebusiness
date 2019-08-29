@@ -2785,10 +2785,10 @@ class ProjectMember(BaseModel):
         nextNum = 1
 
         # 年末まで注文作成ため、一時対応　start
-        if today.strftime('%Y') == '2019':
-            nextNum = 12 - int(today.strftime('%m'))
-            if nextNum == 0:
-                nextNum = 1
+        # if today.strftime('%Y') == '2019':
+        #     nextNum = 12 - int(today.strftime('%m'))
+        #     if nextNum == 0:
+        #         nextNum = 1
         # 年末まで注文作成ため、一時対応　end
         
         next_month = common.add_months(today, nextNum)

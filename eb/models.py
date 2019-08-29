@@ -2796,9 +2796,6 @@ class ProjectMember(BaseModel):
             if self.end_date and next_month.strftime('%Y%m') <= self.end_date.strftime('%Y%m') else today
         for i in range(max_months - min_months, -1, -1):
             date = common.add_months(self.start_date, i)
-            if (max_date.year * 12 + max_date.month) < (date.year * 12 + date.month):
-                # 来月以降だったら、表示する必要ないので、スキップする。
-                continue
             try:
                 order = BpMemberOrder.objects.annotate(
                     ym_start=Concat('year', 'month', output_field=models.CharField()),
@@ -2807,6 +2804,9 @@ class ProjectMember(BaseModel):
                       ym_end__gte='%04d%02d' % (date.year, date.month))
             except (ObjectDoesNotExist, MultipleObjectsReturned):
                 order = None
+            if order==None and (max_date.year * 12 + max_date.month) < (date.year * 12 + date.month):
+                # 来月以降だったら、表示する必要ないので、スキップする。
+                continue
             days = common.get_business_days(date.year, date.month)
             orders.append((date.year, date.month, len(days), order,
                            date.strftime('%Y%m') < common.add_months(today, -2).strftime('%Y%m')))

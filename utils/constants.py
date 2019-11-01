@@ -207,7 +207,8 @@ CHOICE_POSITION = (
     (Decimal('8.0'), "PM"),
     (Decimal('9.0'), "リーダー"),
     (Decimal('10.0'), "サブリーダー"),
-    (Decimal('11.0'), "勤務統計者")
+    (Decimal('11.0'), "勤務統計者"),
+    (Decimal('12.0'), "Gr.マネージャー")
 )
 CHOICE_SEX = (
     ('1', "男"), ('2', "女")

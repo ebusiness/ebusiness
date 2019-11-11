@@ -1378,6 +1378,13 @@ def generate_subcontractor_request_data(subcontractor, year, month, subcontracto
                     # 金額合計
                     members_amount += dict_expenses['ITEM_AMOUNT_TOTAL']
                     detail_members.append(dict_expenses)
+
+        if company.decimal_type == '0':
+            lump_tax = int(round(members_amount * company.tax_rate))
+        else:
+            # 出勤のトータル金額の税金
+            lump_tax = int(members_amount * company.tax_rate)
+
         for i, lump_contract in enumerate(lump_contracts):
             dict_expenses = dict()
             # この項目は請求書の出力ではなく、履歴データをProjectRequestDetailに保存するために使う。

@@ -394,7 +394,7 @@ function calculate_tax_amount(obj, name_tax, name_total) {
         obj_total = $("#id_" + name_total);
 
         cost = parseInt($(obj).val());
-        tax = parseInt(cost * 0.08);
+        tax = parseInt(cost * 0.10);
         obj_tax.val(tax);
         obj_total.val(cost + tax);
     }

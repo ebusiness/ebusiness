@@ -1988,6 +1988,7 @@ class Project(BaseModel):
     salesperson = models.ForeignKey(Salesperson, blank=True, null=True, on_delete=models.PROTECT, verbose_name=u"営業員")
     department = models.ForeignKey(Section, blank=True, null=True, verbose_name=u"所属部署", on_delete=models.PROTECT,
                                    help_text=u"一括案件で、メンバーアサインしていない場合を設定する。")
+    request_type = models.CharField(max_length=2, default='01', choices=constants.CHOICE_REQUEST_TYPE, verbose_name=u"請求種類")
     members = models.ManyToManyField(Member, through='ProjectMember', blank=True)
 
     objects = PublicManager(is_deleted=False, client__is_deleted=False)
@@ -3206,6 +3207,7 @@ class MemberAttendance(BaseModel):
     expenses = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"経費")
     min_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0, editable=False, verbose_name=u"基準時間")
     max_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0, editable=False, verbose_name=u"最大時間")
+    carryover_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name=u"繰越時間")
     plus_per_hour = models.IntegerField(default=0, editable=False, verbose_name=u"増（円）")
     minus_per_hour = models.IntegerField(default=0, editable=False, verbose_name=u"減（円）")
     price = models.IntegerField(default=0, verbose_name=u"価格")

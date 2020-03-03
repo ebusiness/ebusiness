@@ -219,13 +219,25 @@ function calc_price_for_minus(obj) {
 }
 
 function calc_hourly_pay(obj) {
-    row_id = $(obj).parent().parent().attr("id");
-    total_hours = $(obj).val();
-    hourly_pay = $("#" + row_id + "-hourly_pay").val();
-    obj_value = $("#" + row_id + "-price");                     // 価格
+    let row_id = $(obj).parent().parent().attr("id");
+    let total_hours = $(obj).val();
+    let hourly_pay = $("#" + row_id + "-hourly_pay").val();
+    let obj_value = $("#" + row_id + "-price");                     // 価格
+    let basic_hours = $(obj).parent().parent().find('input.carryover-hours').val();
+    let prev_carryover = $(obj).parent().parent().find('input.prev-carryover-hours').val();
+    let obj_carryover = $("#" + row_id + "-carryover_hours");
+    if (basic_hours) {
+        basic_hours = parseFloat(basic_hours);
+    }
     if (hourly_pay != "" && total_hours != "") {
-        total_price = total_hours * hourly_pay;
-        obj_value.val(Math.round(total_price));
+        if (basic_hours) {
+            let total_price = (basic_hours + parseFloat(prev_carryover)) * hourly_pay;
+            obj_value.val(Math.round(total_price));
+            obj_carryover.val(parseFloat(total_hours) - basic_hours);
+        } else {
+            let total_price = total_hours * hourly_pay;
+            obj_value.val(Math.round(total_price));
+        }
     }
 }
 

@@ -77,26 +77,6 @@ if sys.platform in ('linux2', 'linux'):
             'PORT': os.environ['MYSQL_PORT_3306_TCP_PORT'],
         },
     }
-elif sys.platform == 'win32' and getpass.getuser() == 'EB097':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'eb_sales',
-            'USER': 'root',
-            'PASSWORD': 'root',
-            'HOST': '',
-            'PORT': '',
-        },
-
-        # 'bpm_eboa': {
-        #     'ENGINE': 'django.db.backends.mysql',
-        #     'NAME': 'bpm_eboa',
-        #     'USER': 'root',
-        #     'PASSWORD': 'root',
-        #     'HOST': '',
-        #     'PORT': '',
-        # },
-    }
 else:
     DATABASES = {
         'default': {
@@ -107,15 +87,6 @@ else:
             'HOST': '',
             'PORT': '',
         },
-
-        # 'bpm_eboa': {
-        #     'ENGINE': 'django.db.backends.mysql',
-        #     'NAME': 'bpm_eboa',
-        #     'USER': 'root',
-        #     'PASSWORD': 'root',
-        #     'HOST': '',
-        #     'PORT': '',
-        # },
     }
 
 # DATABASE_ROUTERS = ['employee.db_router.DbRouter']

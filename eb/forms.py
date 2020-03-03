@@ -534,13 +534,14 @@ class MemberAttendanceFormSet(forms.ModelForm):
 class MemberAttendanceFormSetHourlyPay(forms.ModelForm):
     class Meta:
         model = models.MemberAttendance
-        fields = ['project_member', 'year', 'month', 'total_hours', 'extra_hours', 'price', 'comment']
+        fields = ['project_member', 'year', 'month', 'total_hours', 'extra_hours', 'price', 'carryover_hours', 'comment']
 
     total_hours = forms.DecimalField(max_digits=5, decimal_places=2,
                                      widget=forms.TextInput(
                                          attrs={'onblur': "calc_hourly_pay(this)",
                                                 'type': 'number',
                                                 'style': 'width: 80px;',
+                                                'text-align': 'right',
                                                 'step': 0.25}),
                                      label=u"合計時間",
                                      required=True)
@@ -548,6 +549,7 @@ class MemberAttendanceFormSetHourlyPay(forms.ModelForm):
                                         widget=forms.TextInput(
                                             attrs={'type': 'number',
                                                    'style': 'width: 70px;',
+                                                   'text-align': 'right',
                                                    'step': 0.25}),
                                         label=u"ＢＰ作業時間",
                                         required=False)
@@ -556,11 +558,20 @@ class MemberAttendanceFormSetHourlyPay(forms.ModelForm):
                                          attrs={'type': 'number',
                                                 'style': 'width: 50px;border: 0px;background-color: transparent;',
                                                 'readonly': 'readonly',
+                                                'text-align': 'right',
                                                 'step': 0.25},),
                                      label=u"残業時間",
                                      required=True)
+    carryover_hours = forms.DecimalField(max_digits=5, decimal_places=2, initial=0,
+                                         widget=forms.TextInput(
+                                             attrs={'type': 'number',
+                                                    'style': 'width: 55px;',
+                                                    'text-align': 'right',
+                                                    'step': 0.25}, ),
+                                         label=u"繰越時間")
     price = forms.IntegerField(initial=0,
                                widget=forms.TextInput(attrs={'style': 'width: 75px;',
+                                                             'text-align': 'right',
                                                              'type': 'number'}),
                                label=u"価格")
     hourly_pay = forms.IntegerField(initial=0,
@@ -568,6 +579,7 @@ class MemberAttendanceFormSetHourlyPay(forms.ModelForm):
                                                                   'style': 'width: 50px;'
                                                                            'background-color: transparent;'
                                                                            'border: 0px;',
+                                                                           'text-align': 'right',
                                                                   }),
                                     label=u"時給",
                                     required=False)

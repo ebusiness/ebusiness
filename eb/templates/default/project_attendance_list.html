@@ -40,9 +40,14 @@
         </tr>
         <tr>
             <th>小数の処理区分</th>
-            <td colspan="3">
+            <td>
                 {{ project.client.get_decimal_type_display }}
                 <input type="hidden" id="hidDecimalType" value="{{ project.client.decimal_type }}" />
+            </td>
+            <th>請求種類</th>
+            <td>
+                {{ project.get_request_type_display }}
+                <input type="hidden" id="hidDecimalType" value="{{ project.request_type }}" />
             </td>
         </tr>
     </table>
@@ -60,6 +65,10 @@
                         {% for field in form.visible_fields %}
                             <th>{{ field.label|capfirst }}</th>
                         {% endfor %}
+                        {% if project.request_type == '03' %}
+                            <th>基準時間</th>
+                            <th>前月繰越</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 {% endif %}
@@ -79,6 +88,10 @@
                             {{ field }}
                         </td>
                     {% endfor %}
+                    {% if project.request_type == '03' %}
+                        <td><input type="text" class="carryover-hours" readonly="readonly" style="border: none; background-color: transparent; width: 40px; text-align: right;" value="{{ form.initial.min_hours }}"/></td>
+                        <td><input type="text" class="prev-carryover-hours" readonly="readonly" style="border: none; background-color: transparent; width: 40px; text-align: right;" value="{{ form.initial.prev_carryover_hours }}"/></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             <tfoot>

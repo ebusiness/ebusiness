@@ -661,9 +661,10 @@ class ProjectAttendanceView(BaseTemplateView):
                                  'total_hours': attendance.total_hours,
                                  'total_hours_bp': attendance.total_hours_bp,
                                  'extra_hours': attendance.extra_hours,
+                                 'carryover_hours': attendance.carryover_hours,
                                  'price': attendance.price,
                                  'comment': attendance.comment,
-                                 'hourly_pay': project_member.hourly_pay
+                                 'hourly_pay': project_member.hourly_pay,
                                  }
                         else:
                             d = {'id': attendance.pk,
@@ -678,6 +679,7 @@ class ProjectAttendanceView(BaseTemplateView):
                                  'total_hours': attendance.total_hours,
                                  'total_hours_bp': attendance.total_hours_bp,
                                  'extra_hours': attendance.extra_hours,
+                                 'carryover_hours': attendance.carryover_hours,
                                  'plus_per_hour': project_member.plus_per_hour,
                                  'minus_per_hour': project_member.minus_per_hour,
                                  'price': attendance.price,
@@ -720,6 +722,12 @@ class ProjectAttendanceView(BaseTemplateView):
                                  'minus_per_hour': project_member.minus_per_hour,
                                  'price': total_price,
                                  }
+                    if project.request_type == '03':
+                        d['min_hours'] = project_member.min_hours
+                        prev_mont = common.add_months(date, -1)
+                        prev_attendance = project_member.get_attendance(prev_mont.year, prev_mont.month)
+                        if prev_attendance:
+                            d['prev_carryover_hours'] = prev_attendance.carryover_hours
                     dict_initials.append(d)
                 if project.is_hourly_pay:
                     attendance_formset = modelformset_factory(models.MemberAttendance,
@@ -766,6 +774,8 @@ class ProjectAttendanceView(BaseTemplateView):
                     attendance_id = request.POST.get("form-%s-id" % (i,), None)
                     attendance.pk = int(attendance_id) if attendance_id else None
                 action_flag = CHANGE if attendance.pk else ADDITION
+                if project.request_type == '03':
+                    attendance.min_hours = attendance.project_member.min_hours
                 attendance.save()
                 if action_flag == ADDITION:
                     LogEntry.objects.log_action(request.user.id,

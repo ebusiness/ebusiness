@@ -458,6 +458,11 @@ CHOICE_ALLOWANCE_UNIT = (
     ('02', '円/年'),
     ('03', '円/時間'),
 )
+CHOICE_REQUEST_TYPE = (
+    ('01', '普通請求'),
+    ('02', '時給'),
+    ('03', '時給（繰越）'),
+)
 
 xlPart = 2
 xlByRows = 1

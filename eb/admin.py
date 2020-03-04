@@ -770,6 +770,10 @@ class ProjectMemberAdmin(BaseAdmin):
     list_display_links = ['member']
     list_filter = ['status', 'is_deleted']
     inlines = (MemberAttendanceInline, MemberExpensesInline, SubcontractorMemberExpensesInline)
+    readonly_fields = ('request_type',)
+
+    def request_type(self, obj):
+        return obj.project.get_request_type_display()
 
     def display_project_client(self, obj):
         return obj.project.client.name
@@ -780,6 +784,7 @@ class ProjectMemberAdmin(BaseAdmin):
     display_project_client.admin_order_field = 'project__client'
     display_eboa_user_id.short_description = u"EBOA連携ID"
     display_eboa_user_id.admin_order_field = 'member__eboa_user_id'
+    request_type.short_description = u"請求種類"
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(ProjectMemberAdmin, self).get_form(request, obj, **kwargs)

@@ -342,17 +342,24 @@ def load_section_attendance(file_content, year, month, use_id):
             continue
 
         total_hours = common.get_attendance_total_hours(total_hours, project_member.project.attendance_type)
-        if total_hours > float(project_member.max_hours):
-            # 残業あり
-            extra_hours = total_hours - float(project_member.max_hours)
-            price = float(project_member.price) + extra_hours * float(project_member.plus_per_hour)
-        elif total_hours < float(project_member.min_hours):
-            # 欠勤あり
-            extra_hours = total_hours - float(project_member.min_hours)
-            price = float(project_member.price) + extra_hours * float(project_member.minus_per_hour)
-        else:
+        if project_member.project.request_type == '03':
+            prev_date = common.add_months(datetime.date(int(year), int(month), 1), -1)
+            prev_attendance = project_member.get_attendance(prev_date.strftime('%Y'), prev_date.strftime('%m'))
+            prev_carryover_hours = prev_attendance.carryover_hours if prev_attendance else 0
             extra_hours = 0
-            price = project_member.price
+            price = project_member.price * (project_member.min_hours + prev_carryover_hours)
+        else:
+            if total_hours > float(project_member.max_hours):
+                # 残業あり
+                extra_hours = total_hours - float(project_member.max_hours)
+                price = float(project_member.price) + extra_hours * float(project_member.plus_per_hour)
+            elif total_hours < float(project_member.min_hours):
+                # 欠勤あり
+                extra_hours = total_hours - float(project_member.min_hours)
+                price = float(project_member.price) + extra_hours * float(project_member.minus_per_hour)
+            else:
+                extra_hours = 0
+                price = project_member.price
 
         attendance = project_member.get_attendance(year, month)
         has_requested = False
@@ -433,6 +440,8 @@ def load_section_attendance(file_content, year, month, use_id):
         else:
             change_message = (get_text_list(changed_list, _('and')) if changed_list else '') + _('Added.')
 
+        if project_member.project.request_type == '03':
+            attendance.carryover_hours = float(attendance.total_hours) - float(project_member.min_hours)
         attendance.save()
         # 客先立替金は精算リストに追加する。
         if attendance.advances_paid_client:

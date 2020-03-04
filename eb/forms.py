@@ -435,6 +435,13 @@ class MemberAttendanceForm(forms.ModelForm):
                                                 'step': 0.25}),
                                      label=u"残業時間",
                                      required=True)
+    carryover_hours = forms.DecimalField(max_digits=5, decimal_places=2, initial=0,
+                                         widget=forms.TextInput(
+                                             attrs={'type': 'number',
+                                                    'style': 'width: 70px;',
+                                                    'step': 0.25}),
+                                         label=u"繰越時間",
+                                         required=True)
     price = forms.IntegerField(initial=0,
                                widget=forms.TextInput(attrs={'style': 'width: 80px;',
                                                              'type': 'number'}),

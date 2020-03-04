@@ -145,21 +145,26 @@ function calc_plus_from_max_hour(obj) {
 }
 
 function calc_extra_hours(obj) {
-    price = $("#id_price").val();
-    min_hours = $("#id_min_hours").val();
-    max_hours = $("#id_max_hours").val();
-    total_hours = $(obj).val();
-    row_id = $(obj).parent().parent().attr("id");
-    obj_extra_hours = $("#id_" + row_id + "-extra_hours");
-    obj_plus = $("#id_plus_per_hour");
-    obj_minus = $("#id_minus_per_hour");
-    obj_value = $("#id_" + row_id + "-price");                     // 価格
+    let price = $("#id_price").val();
+    let min_hours = $("#id_min_hours").val();
+    let max_hours = $("#id_max_hours").val();
+    let total_hours = $(obj).val();
+    let row_id = $(obj).parent().parent().attr("id");
+    let obj_extra_hours = $("#id_" + row_id + "-extra_hours");
+    let obj_plus = $("#id_plus_per_hour");
+    let obj_minus = $("#id_minus_per_hour");
+    let obj_value = $("#id_" + row_id + "-price");                     // 価格
+    let request_type = $("div.field-request_type div.readonly").text();
+    let obj_carryover = $("#id_" + row_id + "-carryover_hours");
     if (min_hours != "" && max_hours != "" && total_hours != "") {
         min_hours = parseFloat(min_hours);
         max_hours = parseFloat(max_hours);
         total_hours = parseFloat(total_hours);
-        extra_hours = 0.00;
-        if (total_hours > max_hours) {
+        let extra_hours = 0.00;
+        if (request_type === '時給（繰越）') {
+            extra_hours = 0;
+            obj_carryover.val(total_hours - min_hours);
+        } else if (total_hours > max_hours) {
             extra_hours = total_hours - max_hours;
         } else if (total_hours < min_hours) {
             extra_hours = total_hours - min_hours;
@@ -174,10 +179,18 @@ function calc_extra_hours(obj) {
 //        obj_minus.val(minus_per_hour);
 
         // 最終価格
-        if (extra_hours > 0) {
+        if (request_type === '時給（繰越）') {
+            // 前月繰越金額取得
+            let prev_tr = $("#" + row_id).prev();
+            let prev_carryover_hours = 0;
+            if (prev_tr && prev_tr.length > 0) {
+                prev_carryover_hours = $("#id_" + prev_tr.attr('id') + '-carryover_hours').val();
+                prev_carryover_hours = parseFloat(prev_carryover_hours);
+            }
+            result = price * (prev_carryover_hours + min_hours);
+        } else if (extra_hours > 0) {
             result = price + extra_hours * plus_per_hour;
-        }
-        else if (extra_hours < 0) {
+        } else if (extra_hours < 0) {
             result = price + extra_hours * minus_per_hour;
         } else {
             result = price;

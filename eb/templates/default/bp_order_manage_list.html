@@ -1,0 +1,180 @@
+{% extends theme|add:"/base.html" %}
+{% load humanize %}
+{% load order_by_tag %}
+{% load sales_templates %}
+{% load year_month_filter %}
+
+{% block header %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        setScrollBodyHeight();
+    });
+    function setScrollBodyHeight() {
+        $("header").css("height", "47px");
+        $("header div.header-top").css("display", "none");
+        $("header div.header-nav ul li ul").css("top", "42px");
+        $("footer").css("display", "none");
+
+        const height = window.innerHeight - $(".sub_scroll_container")[0].offsetTop - 20;
+        $(".sub_scroll_container").css("height", height);
+    }
+    window.addEventListener('resize', function (event) {
+        setScrollBodyHeight();
+    });
+    function switchDisplay() {
+        if ($("#switch").text() == " 展開") {
+            setDisplayExpand(true);
+        } else {
+            setDisplayExpand(false);
+        }
+        setScrollBodyHeight();
+    }
+    function setDisplayExpand(isExpand) {
+        if (isExpand) {
+            $("section .dashboard .dashboard-title").css("display", "none");
+            $("section .dashboard form").css("display", "none");
+            $("section div.container").css("margin", "0");
+            $("section div.container").css("width", window.innerWidth);
+            $("section div.scroll_container").css("width", window.innerWidth);
+            $("#switch").html('<i class="fa fa-compress" aria-hidden="true"> 折畳</i>');
+        } else {
+            $("section .dashboard .dashboard-title").css("display", "");
+            $("section .dashboard form").css("display", "");
+            $("section div.container").css("margin", "0 auto");
+            $("section div.container").css("width", "1100px");
+            $("section div.scroll_container").css("width", "1100px");
+            $("#switch").html('<i class="fa fa-expand" aria-hidden="true"></i> 展開');
+        }
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="dashboard">
+        <div class="dashboard-title">{{ title }}</div>
+        <div class="dashboard-tail">
+            <a id="switch" href="javascript:switchDisplay()"><i class="fa fa-expand" aria-hidden="true"></i> 展開</a>
+        </div>
+    </div>
+    <div class="scroll_container">
+        <table class="attendance" cellspacing="0" cellpadding="0" style="width: 1700px;">
+            <thead>
+                <tr>
+                    <th class="bk01" colspan="6">基本データ</th>
+                    <th class="bk02" colspan="4">案件情報</th>
+                    <th class="bk03" colspan="6">予定</th>
+                    <th class="bk04" colspan="6">実績</th>
+                </tr>
+                <tr>
+                    <!--基本データ-->
+                    <th class="bk01">{% create_single_order_display "社員番号" "employee_id" %}</th>
+                    <th class="bk01">{% create_single_order_display "氏名" "first_name" %}</th>
+                    <th class="bk01">所在部署</th>
+                    <th class="bk01">{% create_single_order_display "所属" "company_name" %}</th>
+                    <th class="bk01">社会保険<br/>加入有無</th>
+                    <th class="bk01">{% create_single_order_display "契約形態" "member_type" %}</th>
+                    <!--案件情報-->
+                    <th class="bk02">{% create_single_order_display "案件名" "project_name" %}</th>
+                    <th class="bk02">最寄駅</th>
+                    <th class="bk02">{% create_single_order_display "顧客" "client_name" %}</th>
+                    <th class="bk02">契約種類</th>
+                    <!--予定-->
+                    <th class="bk03 red">勤務時間</th>
+                    <th class="bk03 red">勤務日数</th>
+                    <th class="bk03 red">契約上限</th>
+                    <th class="bk03 red">契約下限</th>
+                    <th class="bk03 red">金額</th>
+                    <th class="bk03 red">出勤の計算区分</th>
+                    <!--実績-->
+                    <th class="bk04">勤務時間</th>
+                    <th class="bk04">勤務日数</th>
+                    <th class="bk04">契約上限</th>
+                    <th class="bk04">契約下限</th>
+                    <th class="bk04">金額</th>
+                    <th class="bk04">出勤の計算区分</th>
+                </tr>
+            </thead>
+        </table>
+        <div class="sub_scroll_container" style="width: 1720px;">
+            <table class="attendance" cellspacing="0" cellpadding="0" style="width: 1700px;">
+                <tbody>
+                    {% if results.length == 0 %}
+                        <tr class="row2"><td class="center red" colspan="34">メンバーがいません。</td></tr>
+                    {% else %}
+                        {% for data_row in results %}
+                        {% is_belong_to request.user data_row.member_id year month as is_own %}
+                        <tr>
+                            <!-- 社員番号 -->
+                            <td>{{ data_row.employee_id|default:'' }}</td>
+                            <!-- 氏名 -->
+                            <td><a href="{% url 'member_detail' data_row.employee_id %}">{{ data_row.full_name|default:'' }}</a></td>
+                            <!-- 所在部署 -->
+                            <td>{{ data_row.department_name|default:'' }}</td>
+                            <!-- 所属 -->
+                            <td>{{ data_row.company_name|default:'' }}</td>
+                            <!-- 社会保険加入有無 -->
+                            <td class="center">{% if data_row.endowment_insurance == "1" %}○{% endif %}</td>
+                            <!-- 契約形態 -->
+                            <td>{{ data_row.member_type_name|default:'' }}</td>
+                            <!-- 案件名 -->
+                            <td title="{{ data_row.project_name }}" {% if data_row.is_lump %}class="lump_project"{% endif %}>
+                                {% if data_row.project_id %}
+                                    <a href="{% url 'project_detail' data_row.project_id %}">{{ data_row.project_name }}</a>
+                                {% endif %}
+                            </td>
+                            <!-- 最寄駅 -->
+                            <td>{{ data_row.nearest_station|default:'' }}</td>
+                            <!-- 顧客 -->
+                            <td>{{ data_row.client_name|default:'' }}</td>
+                            <!-- 契約種類 -->
+                            <td>{% if data_row.is_lump %}一括{% else %}SES{% endif %}</td>
+                            <!-- 勤務時間 -->
+                            <td class="num"></td>
+                            <!-- 勤務日数 -->
+                            <td class="num"></td>
+                            <!-- 契約上限 -->
+                            <td class="num">{{ data_row.max_hours }}</td>
+                            <!-- 契約下限 -->
+                            <td class="num">{{ data_row.min_hours }}</td>
+                            <!-- 金額 -->
+                            <td class="num">{{ data_row.base_amount|intcomma }}</td>
+                            <!-- 出勤の計算区分 -->
+                            <td>
+                                {% if data_row.attendance_type == '1' %}
+                                    １５分ごと
+                                {% elif data_row.attendance_type == '2' %}
+                                    ３０分ごと
+                                {% elif data_row.attendance_type == '3' %}
+                                    １時間ごと
+                                {% endif %}
+                            </td>
+                            <!-- 勤務時間 -->
+                            <td class="num">{{ data_row.real_total_hours|default:'' }}</td>
+                            <!-- 勤務日数 -->
+                            <td class="num">{{ data_row.real_total_days|default:'' }}</td>
+                            <!-- 契約上限 -->
+                            <td class="num">{{ data_row.real_max_hours|default:'' }}</td>
+                            <!-- 契約下限 -->
+                            <td class="num">{{ data_row.real_min_hours|default:'' }}</td>
+                            <!-- 金額 -->
+                            <td class="num">{{ data_row.real_turnover_amount|default:''|intcomma }}</td>
+                            <!-- 出勤の計算区分 -->
+                            <td>
+                                {% if data_row.request_detail_id %}
+                                    {% if data_row.real_attendance_type == '1' %}
+                                        １５分ごと
+                                    {% elif data_row.real_attendance_type == '2' %}
+                                        ３０分ごと
+                                    {% elif data_row.real_attendance_type == '3' %}
+                                        １時間ごと
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

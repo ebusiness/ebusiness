@@ -623,9 +623,7 @@ def get_client_turnover(year, month, client):
     df = df.sort_values(by='project_name', ascending=True)
     return df
 
-"""
-個人事業主コスト
-"""
+
 def get_business_owner_cost(year, month): #, param_dict=None
     # df = biz.get_cost_by_month(year, month, param_dict)
     # return df
@@ -650,6 +648,7 @@ def get_business_owner_cost(year, month): #, param_dict=None
 
     return df
 
+
 def get_bundle_project(subcontractor_id, year, month):
     sql = '''
         SELECT 
@@ -668,3 +667,10 @@ def get_bundle_project(subcontractor_id, year, month):
     '''
     df = pd.read_sql(sql % (year, month, subcontractor_id), connection)
     return df
+
+
+def get_bp_order_manage_list(year, month):
+    with connection.cursor() as cursor:
+        cursor.callproc('sp_bp_order_manage_list', (year, month))
+        results = common.dictfetchall(cursor)
+    return results

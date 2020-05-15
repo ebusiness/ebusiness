@@ -539,3 +539,74 @@ section .hierarchy .lev3,
 section .hierarchy .lev3 .first {
     padding-left: 60px;
 }
+
+table.attendance {
+    border-top: thin solid black;
+    border-right: thin solid black;
+    font-size: 12px;
+    table-layout: fixed;
+}
+table.attendance thead th {
+    text-align: center;
+    border-left: thin solid black;
+    border-bottom: thin solid black;
+}
+table.attendance tbody {
+    background: white;
+}
+table.attendance tbody td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-left: thin solid black;
+    border-bottom: thin solid black;
+}
+table.attendance tfoot {
+    font-size: 13px;
+    background: linear-gradient(#fff, #eee);
+}
+table.attendance tfoot tr {
+    height: 30px;
+}
+table.attendance tfoot td {
+    padding-top: 4px;
+    padding-left: 5px;
+    border-left: thin solid lightgray;
+    border-bottom: thin solid lightgray;
+    border-right: 0 solid lightgray;
+}
+table.attendance th.bk01 {
+    background: rgb(180, 198, 231);
+}
+table.attendance th.bk02 {
+    background: rgb(198, 224, 180);
+}
+table.attendance th.bk03 {
+    background: rgb(255, 230, 153);
+}
+table.attendance th.bk04 {
+    background: rgb(244, 176, 132);
+}
+table.attendance th.bk05 {
+    background: rgb(155, 194, 230);
+}
+table.attendance th.bk06 {
+    background: rgb(255, 255, 0);
+}
+table.attendance th.bk07 {
+    background: rgb(235, 169, 255);
+}
+table.attendance th, td {
+    padding: 0 3px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+table.attendance td.error {
+    background: red;
+    color: white;
+}
+table.attendance tbody tr:hover {
+    background-color: LightGreen;
+}
+table.attendance tbody tr:hover td {
+    background-color: transparent;
+}

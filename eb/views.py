@@ -2712,6 +2712,25 @@ class SendMailBpRequestView(BaseView):
         return JsonResponse(ret)
 
 
+class BpOrderManagerView(BaseTemplateView):
+    template_name = 'default/bp_order_manage_list.html'
+
+    def get(self, request, *args, **kwargs):
+        year = kwargs.get(b'year')
+        month = kwargs.get(b'month')
+        context = self.get_context_data()
+        results = biz_turnover.get_bp_order_manage_list(year, month)
+        context.update({
+            'title': u'%s年%s月 ＢＰ発注管理一覧 | %s' % (year, month, constants.NAME_SYSTEM),
+            'site_header': admin.site.site_header,
+            'site_title': admin.site.site_title,
+            'year': year,
+            'month': month,
+            'results': results,
+        })
+        return self.render_to_response(context)
+
+
 def login_user(request, qr=False):
     logout(request)
     img_base64 = None

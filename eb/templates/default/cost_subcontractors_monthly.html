@@ -21,6 +21,7 @@
                 <th>出勤時間</th>
                 <th>人数</th>
                 <th></th>
+                <th style="width: 120px;"></th>
             </tr>
         </thead>
         <tbody>
@@ -31,10 +32,11 @@
                         <td class="num">{{ object.total_hours }}</td>
                         <td class="num">{{ object.member_count }}</td>
                         <td class="center"><a href="{% url 'cost_subcontractors_by_month' object.year object.month %}">会社別</a></td>
+                        <td class="center"><a href="{% url 'bp_order_manager_list' object.year object.month %}">ＢＰ発注管理一覧</a></td>
                     </tr>
                 {% endfor %}
             {% else %}
-                <tr class="row1"><td class="center red" colspan="4">協力会社がありません。</td></tr>
+                <tr class="row1"><td class="center red" colspan="5">協力会社がありません。</td></tr>
             {% endif %}
         </tbody>
         <tfoot>
@@ -42,6 +44,7 @@
                 <th></th>
                 <th>出勤時間</th>
                 <th>人数</th>
+                <th></th>
                 <th></th>
             </tr>
         </tfoot>

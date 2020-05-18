@@ -124,6 +124,8 @@ turnover_patterns = [
     url(r'^division/(?P<pk>\d+)/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})\.html$',
         views.TurnoverDivisionByMonth.as_view(),
         name='turnover_division_by_month'),
+    url(r'^edi/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})\.html$',
+        views.CreateEdiAmountView.as_view(), name='create_edi_amount'),
 ]
 
 subcontractor_patterns = [

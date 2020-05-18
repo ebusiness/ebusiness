@@ -57,6 +57,28 @@
                 }]
             });
         });
+        function createEdiAmount(obj) {
+            event.preventDefault();
+            const form = $(obj).closest('form');
+            $.post(
+                form.attr('action'),
+                form.serialize(),
+            ).success(function (res) {
+                alert('ＥＤＩ金額が作成しました。');
+                hide_dialog();
+            }).fail(function (res) {
+                alert(res.responseJSON.detail);
+            });
+        }
+
+        function calc_turnover_amount(obj) {
+            const form = $(obj).closest('form');
+            const amount = parseInt($(obj).val());
+            if (!isNaN(amount)) {
+                const tax_amount = parseInt(amount / 11);
+                $("input[name=turnover_amount]", form).val(amount - tax_amount);
+            }
+        }
     </script>
 {% endblock %}
 
@@ -65,6 +87,7 @@
         <div class="dashboard-title">月間売上情報</div>
         <div id="container" style="min-width: 250px; height: 260px; margin: 0 auto"></div>
     </div>
+    <div id="mask" onclick="hide_dialog()" class="mask"></div>
     <table id="tbl_turnover_monthly" class="list" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
@@ -76,6 +99,7 @@
                 <th style="text-align: right;">合計</th>
                 <th></th>
                 <th></th>
+                <th style="text-align: center; width: 90px;">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -91,6 +115,37 @@
                 <td style="text-align: right;">{{ turnover.amount__sum|intcomma }}</td>
                 <td class="center"><a href="{% url 'turnover_clients_monthly' turnover.year turnover.month %}">お客様別詳細</a></td>
                 <td class="center"><a href="{% url 'turnover_divisions_by_month' turnover.year turnover.month  %}">事業部別詳細</a></td>
+                <td class="center">
+                    <a href="javascript:show_dialog('create_edi_amount_{{ turnover.year }}_{{ turnover.month }}')">EDI金額調整</a>
+                    <div id="create_edi_amount_{{ turnover.year }}_{{ turnover.month }}" class="dialog" style="overflow-y: hidden;">
+                        <form method="post" action="{% url 'create_edi_amount' turnover.year turnover.month %}">
+                            <div style="display: none;">{% csrf_token %}</div>
+                            <table style="width: 100%; text-align: left">
+                                <tr>
+                                    <td>対象年</td>
+                                    <td>{{ turnover.year }}年</td>
+                                </tr>
+                                <tr>
+                                    <td>対象月</td>
+                                    <td>{{ turnover.month }}月</td>
+                                </tr>
+                                <tr>
+                                    <td>金額（税込）</td>
+                                    <td><input type="number" name="amount" value="{{ turnover.edi_amount }}" onchange="calc_turnover_amount(this)"></td>
+                                </tr>
+                                <tr>
+                                    <td>金額（税抜）</td>
+                                    <td><input type="number" name="turnover_amount" value="{{ turnover.edi_turnover_amount }}"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: right;">
+                                        <input type="submit" value=" 確 定 " onclick="createEdiAmount(this);">
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -104,6 +159,7 @@
                 <th style="text-align: right;">合計</th>
                 <th></th>
                 <th></th>
+                <th style="text-align: center">操作</th>
             </tr>
         </tfoot>
     </table>

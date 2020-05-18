@@ -9,7 +9,7 @@ import uuid
 import StringIO
 import pandas as pd
 
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Q, Max, Min, Prefetch, Count, Case, When, IntegerField, Sum
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -1717,3 +1717,31 @@ def get_partner_cost_in_year2(year):
         amount=Sum('amount'),
     ).order_by('name')
     return qs
+
+
+def get_edi_project():
+    try:
+        return models.Project.raw_objects.get(is_deleted=True, name='EDI')
+    except (ObjectDoesNotExist, MultipleObjectsReturned):
+        raise errors.CustomException(u"ＥＤＩの関連会社が作成されていません。")
+
+
+@transaction.atomic
+def create_edi_amount(user, year, month, turnover_amount, amount):
+    project = get_edi_project()
+    project_request = project.get_project_request(year, month)
+    project_request.request_name = u"EDI調整金額"
+    project_request.turnover_amount = turnover_amount
+    project_request.tax_amount = int(amount) - int(turnover_amount)
+    project_request.amount = amount
+    if project_request.pk is None:
+        project_request.created_user = user
+    project_request.updated_user = user
+    project_request.save()
+    if hasattr(project_request, 'projectrequestheading'):
+        project_request.projectrequestheading.delete()
+    models.ProjectRequestHeading.objects.create(
+        project_request=project_request,
+        is_lump=True,
+        lump_amount=amount,
+    )

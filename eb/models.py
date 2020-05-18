@@ -1992,6 +1992,7 @@ class Project(BaseModel):
     members = models.ManyToManyField(Member, through='ProjectMember', blank=True)
 
     objects = PublicManager(is_deleted=False, client__is_deleted=False)
+    raw_objects = models.Manager()
 
     class Meta:
         ordering = ['name']
@@ -2312,6 +2313,14 @@ class ProjectRequest(models.Model):
 
     def __unicode__(self):
         return u"%s-%s" % (self.request_no, self.project.name)
+
+    @classmethod
+    def get_edi_request(cls, year, month):
+        try:
+            project = Project.raw_objects.get(is_deleted=True, name=u'EDI金額調整')
+            return cls.objects.filter(project=project, year=year, month=month).first()
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            return None
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, other_data=None):

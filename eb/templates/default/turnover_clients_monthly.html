@@ -27,14 +27,14 @@
         <thead>
             <tr>
                 <th>{% create_order_display "お客様名称" "" %}</th>
-                <th>{% create_order_display "履歴" "" %}</th>
-                <th>{% create_order_display "コスト" "" %}</th>
-                <th>{% create_order_display "売上（税抜）" "" %}</th>
-                <th>{% create_order_display "税金" "" %}</th>
-                <th>{% create_order_display "精算" "" %}</th>
-                <th>{% create_order_display "合計" "" %}</th>
-                <th>{% create_order_display "粗利" "" %}</th>
-                <th>{% create_order_display "利率" "" %}</th>
+                <th class="center">{% create_order_display "履歴" "" %}</th>
+                <th style="text-align: right">{% create_order_display "コスト" "" %}</th>
+                <th style="text-align: right">{% create_order_display "売上（税抜）" "" %}</th>
+                <th style="text-align: right">{% create_order_display "税金" "" %}</th>
+                <th style="text-align: right">{% create_order_display "精算" "" %}</th>
+                <th style="text-align: right">{% create_order_display "合計" "" %}</th>
+                <th style="text-align: right">{% create_order_display "粗利" "" %}</th>
+                <th style="text-align: right">{% create_order_display "利率" "" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -71,12 +71,12 @@
                 <td>{{ data_frame|length }} 件</td>
                 <td></td>
                 <td class="num">{{ summary.total_cost|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.total_price|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.tax_price|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.expenses_price|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.all_price|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.profit|floatformat:0|intcomma }}</td>
-                <td class="num"> {{ summary.profit_rate|floatformat:1|intcomma }}%</td>
+                <td class="num">{{ summary.total_price|floatformat:0|intcomma }}</td>
+                <td class="num">{{ summary.tax_price|floatformat:0|intcomma }}</td>
+                <td class="num">{{ summary.expenses_price|floatformat:0|intcomma }}</td>
+                <td class="num">{{ summary.all_price|floatformat:0|intcomma }}</td>
+                <td class="num">{{ summary.profit|floatformat:0|intcomma }}</td>
+                <td class="num">{{ summary.profit_rate|floatformat:1|intcomma }}%</td>
             </tr>
         </tfoot>
     </table>

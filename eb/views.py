@@ -1091,6 +1091,7 @@ class TurnoverCompanyMonthlyView(BaseTemplateView):
             'month_list': month_list,
             'turnover_amount_list': turnover_amount_list,
         })
+        context.update(csrf(request))
         return self.render_to_response(context)
 
 
@@ -2729,6 +2730,26 @@ class BpOrderManagerView(BaseTemplateView):
             'results': results,
         })
         return self.render_to_response(context)
+
+
+class CreateEdiAmountView(BaseView):
+
+    def post(self, request, *args, **kwargs):
+        year = kwargs.get(b'year')
+        month = kwargs.get(b'month')
+        turnover_amount = request.POST.get('turnover_amount')
+        amount = request.POST.get('amount')
+        try:
+            biz.create_edi_amount(request.user, year, month, turnover_amount, amount)
+            return JsonResponse({
+                'year': year,
+                'month': month,
+                'amount': amount,
+            })
+        except Exception as ex:
+            return JsonResponse({
+                'detail': ex.message,
+            }, status=400)
 
 
 def login_user(request, qr=False):

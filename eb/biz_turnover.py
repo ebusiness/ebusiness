@@ -80,11 +80,23 @@ def turnover_company_monthly():
                  tax_amount=Sum('tax_amount'),
                  expenses_amount=Sum('expenses_amount')).distinct()\
         .order_by('year', 'month')
+    edi_project = biz.get_edi_project()
     for d in turnover_monthly:
         d['ym'] = d['year'] + d['month']
         cost = models.ProjectRequestDetail.objects.filter(project_request__year=d['year'],
                                                           project_request__month=d['month']).aggregate(Sum('cost'))
         d['cost_amount'] = cost.get('cost__sum', 0)
+        if edi_project:
+            dict_amount = models.ProjectRequest.objects.filter(
+                project=edi_project,
+                year=d['year'],
+                month=d['month'],
+            ).aggregate(
+                edi_amount=Sum('amount'),
+                edi_turnover_amount=Sum('turnover_amount'),
+            )
+            d['edi_amount'] = dict_amount.get('edi_amount') or 0
+            d['edi_turnover_amount'] = dict_amount.get('edi_turnover_amount') or 0
 
     return turnover_monthly
 

@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+{% block inline_field_sets %}
+{% for inline_admin_formset in inline_admin_formsets %}
+    {% if inline_admin_formset.opts.opts.model_name == 'projectmember' %}
+        {% include 'admin/eb/project_member_inline.html' %}
+    {% else %}
+        {% include inline_admin_formset.opts.template %}
+    {% endif %}
+{% endfor %}
+{% endblock %}

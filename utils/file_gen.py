@@ -1196,7 +1196,10 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
     start_row = constants.POS_ATTENDANCE_START_ROW
     count = data_frame.shape[0]
     set_openpyxl_styles(sheet, 'B5:AN%s' % (start_row + count + 2,), 5)
+    distinct_projects = []
     for i, row_data in data_frame.iterrows():
+        if row_data.project_name not in distinct_projects:
+            distinct_projects.append(row_data.project_name)
         # NO
         sheet.cell(row=start_row, column=2).value = "=ROW() - 4"
         # 隠し項目（Project_member ID)
@@ -1367,6 +1370,18 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
     sheet.cell(row=start_row + 2, column=37).value = "=SUM(AK5:AK%s)" % (count + 4)
     sheet.cell(row=start_row + 2, column=38).value = "=SUM(AL5:AL%s)" % (count + 4)
     sheet.cell(row=start_row + 2, column=39).value = "=SUM(AM5:AM%s)" % (count + 4)
+    # 案件集計
+    sheet = book.get_sheet_by_name('案件集計')
+    for i, project_name in enumerate(distinct_projects):
+        sheet.cell(row=5 + i, column=2).value = project_name
+        for j, c in enumerate(('T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI',
+                               'AJ', 'AK', 'AL', 'AM', 'AN')):
+            sheet.cell(row=5 + i, column=3 + j).value = \
+                "=SUMIF(Sheet1!J5:J{end_row},案件集計!B{row},Sheet1!{col}5:{col}{end_row})".format(
+                    end_row=start_row - 1,
+                    row=5 + i,
+                    col=c,
+                )
 
     return save_virtual_workbook(book)
 

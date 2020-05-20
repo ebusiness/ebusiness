@@ -24,6 +24,7 @@ MIME_TYPE_ZIP = 'application/zip'
 MIME_TYPE_HTML = 'text/html'
 
 MAIL_GROUP_SUBCONTRACTOR_PAY_NOTIFY = 'mail_subcontractor_pay_notify'
+MAIL_PROJECT_MEMBER_ADD = 'project_member_add'
 
 NAME_SYSTEM = "営業支援システム"
 NAME_BUSINESS_PLAN = "%02d月営業企画"
@@ -416,6 +417,7 @@ CHOICE_ENDOWMENT_INSURANCE = (
 )
 CHOICE_MAIL_GROUP = (
     ('0400', '注文書と注文請書の送付'),
+    ('0500', '案件メンバー追加時のメール送信'),
 )
 CHOICE_INSURANCE = (
     ('1', "加入する"),

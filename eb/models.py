@@ -41,6 +41,7 @@ from django.utils.translation import ugettext_lazy as _
 # from django.contrib.contenttypes.fields import GenericForeignKey
 
 from utils import common, constants
+from utils.mail import EbMail
 from utils.errors import CustomException
 
 
@@ -921,6 +922,25 @@ class MailGroup(BaseModel):
             mail_group.save()
             return mail_group
 
+    @classmethod
+    def get_project_member_add_mail(cls):
+        try:
+            return MailGroup.objects.get(name=constants.MAIL_PROJECT_MEMBER_ADD)
+        except ObjectDoesNotExist:
+            mail_group = MailGroup(code='0500', name=constants.MAIL_PROJECT_MEMBER_ADD)
+            mail_group.save()
+            return mail_group
+
+    def send_mail(self, **kwargs):
+        data = {
+            'sender': self.mail_sender,
+            'recipient_list': self.get_cc_list(),
+            'mail_title': self.get_mail_title(**kwargs),
+            'mail_body': self.get_mail_body(**kwargs),
+        }
+        mail = EbMail(**data)
+        mail.send_email()
+
 
 class MailCcList(BaseModel):
     group = models.ForeignKey(MailGroup, on_delete=models.PROTECT, verbose_name=u"メールグループ")
@@ -1729,6 +1749,22 @@ class Member(AbstractMember):
     def get_all_cost(self):
         today = datetime.date.today()
         return self.get_cost(today) + self.get_health_insurance + self.traffic_cost + self.employment_insurance
+
+    def get_company(self):
+        today = datetime.date.today()
+        bp_contract = self.bpcontract_set.filter(
+            Q(end_date__isnull=True) | Q(end_date__gte=today),
+            is_deleted=False,
+        ).first()
+        if bp_contract:
+            return bp_contract.company
+        contract = self.contract_set.filter(
+            Q(end_date__isnull=True) | Q(end_date__gte=today),
+            is_deleted=False,
+        ).first()
+        if contract:
+            return contract.company
+        return None
 
     def delete(self, using=None, keep_parents=False):
         self.is_deleted = True

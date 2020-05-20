@@ -7,11 +7,13 @@ Created on 2015/08/26
 import re
 import models
 import datetime
+from itertools import chain
 
 from django import forms
 from django.forms.utils import flatatt
 from django.forms.widgets import Widget
 from django.utils.html import format_html, mark_safe
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
@@ -155,6 +157,24 @@ class ProjectForm(forms.ModelForm):
                 self.add_error('lump_amount', u"一括の場合、一括金額を入力してください。")
         if status == 5 and not self.instance.can_end_project():
             self.add_error('status', u"案件終了できません、まだ作業中のメンバーがいます。")
+
+    def _save_m2m(self):
+        cleaned_data = self.cleaned_data
+        exclude = self._meta.exclude
+        fields = self._meta.fields
+        opts = self.instance._meta
+        # Note that for historical reasons we want to include also
+        # private_fields here. (GenericRelation was previously a fake
+        # m2m field).
+        for f in chain(opts.many_to_many, opts.private_fields):
+            if not hasattr(f, 'save_form_data'):
+                continue
+            if fields and f.name not in fields:
+                continue
+            if exclude and f.name in exclude:
+                continue
+            if f.name in cleaned_data:
+                f.save_form_data(self.instance, cleaned_data[f.name])
 
 
 class MemberForm(forms.ModelForm):
@@ -386,6 +406,29 @@ class ProjectMemberFormset(forms.BaseInlineFormSet):
                         raise forms.ValidationError(u"メンバー%sの開始日が重複している。" % (member.__unicode__(),))
                     if end_date and common.is_cross_date(dates, end_date, i):
                         raise forms.ValidationError(u"メンバー%sの終了日が重複している。" % (member.__unicode__(),))
+
+    def save(self, commit=True):
+        objs = super(ProjectMemberFormset, self).save(commit)
+        if self.new_objects:
+            try:
+                project = self.new_objects[0].project
+                project_members = []
+                for pm in self.new_objects:
+                    member = pm.member
+                    company = member.get_company()
+                    project_members.append({
+                        'name': unicode(pm),
+                        'company': company.name if company else '',
+                        'start_date': pm.start_date,
+                        'end_date': pm.end_date,
+                    })
+                group = models.MailGroup.objects.get(name=constants.MAIL_PROJECT_MEMBER_ADD)
+                group.send_mail(project=project.name, project_members=project_members)
+            except ObjectDoesNotExist:
+                pass
+            except Exception as ex:
+                print ex
+        return objs
 
 
 # class ProjectMemberPriceForm(forms.ModelForm):

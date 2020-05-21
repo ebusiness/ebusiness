@@ -507,10 +507,10 @@ def get_bp_members_cost(year, month, company_id=None, param_dict=None, order_lis
         df.set_value(related_row.index[0], 'employment_insurance', df.loc[index]['employment_insurance'] + related_row.iloc[0].employment_insurance)
         df.set_value(related_row.index[0], 'health_insurance', df.loc[index]['health_insurance'] + related_row.iloc[0].health_insurance)
         # ＥＢの出向契約は非表示
-        df = df.iloc[df.index!=index]
-    df = df.loc[df.member_type==4]
+        df = df.iloc[df.index != index]
+    df = df.loc[df.member_type == 4]
     if company_id:
-        df = df.loc[df.company_id==int(company_id)]
+        df = df.loc[df.company_id == int(company_id)]
     return df
 
 
@@ -540,11 +540,15 @@ def get_bp_cost_by_subcontractor(year, month):
     df = pd.merge(df, df_org_count, how='left', on = ['company_id'])
     # 請求数
     df_request_count = get_subcontractor_request_count(year, month)
-    df = pd.merge(df, df_request_count, how='left', on = ['company_id'])
+    df = pd.merge(df, df_request_count, how='left', on=['company_id'])
     df.requested_count = df.requested_count.fillna(0).astype(int)
     df.is_sent = df.is_sent.fillna(0).astype(int)
     # 請求書作成作成済みフラグ
     df['is_requested'] = np.where(df.organization_count == df.requested_count, 1, 0)
+    # 税込金額
+    company = biz.get_company()
+    tax_rate = company.tax_rate if company and company.tax_rate else 0.1
+    df['total_cost_with_tax'] = df['total_cost'] * (1 + float(tax_rate))
     return df
 
 

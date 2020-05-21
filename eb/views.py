@@ -1670,8 +1670,8 @@ class CostSubcontractorsByMonthView(BaseTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CostSubcontractorsByMonthView, self).get_context_data(**kwargs)
-        year = kwargs.get('year')
-        month = kwargs.get('month')
+        year = kwargs.get(b'year')
+        month = kwargs.get(b'month')
 
         data_frame = biz_turnover.get_bp_cost_by_subcontractor(year, month)
 

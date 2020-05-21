@@ -22,7 +22,8 @@
                 <th>部署数</th>
                 <th style="width: 70px;">請求書作成</th>
                 <th>送信</th>
-                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計：&nbsp;{{ data_frame.sum.total_cost|floatformat:0|intcomma }}</th>
+                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計(税抜)：&nbsp;{{ data_frame.sum.total_cost|floatformat:0|intcomma }}</th>
+                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計(税込)：&nbsp;{{ data_frame.sum.total_cost_with_tax|floatformat:0|intcomma }}</th>
             </tr>
         </thead>
         <tfoot>
@@ -31,7 +32,8 @@
                 <th>部署数</th>
                 <th>請求書作成</th>
                 <th>送信</th>
-                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計：&nbsp;{{ data_frame.sum.total_cost|floatformat:0|intcomma }}</th>
+                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計(税抜)：&nbsp;{{ data_frame.sum.total_cost|floatformat:0|intcomma }}</th>
+                <th style="text-align: right; padding-right: 4px; font-size: 13px; font-weight: normal;">合計(税込)：&nbsp;{{ data_frame.sum.total_cost_with_tax|floatformat:0|intcomma }}</th>
             </tr>
         </tfoot>
         <tbody>
@@ -55,6 +57,7 @@
                             {% endif %}
                         </td>
                         <td class="num">{{ data_row.total_cost|floatformat:0|intcomma }}</td>
+                        <td class="num">{{ data_row.total_cost_with_tax|floatformat:0|intcomma }}</td>
                     </tr>
                 {% endfor %}
             {% endif %}

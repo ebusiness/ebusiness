@@ -447,7 +447,6 @@ def get_cost_by_month(year, month, param_dict=None, order_list=None):
 
     :param year:
     :param month:
-    :param section:
     :param param_dict:
     :param order_list:
     :return:

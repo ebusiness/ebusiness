@@ -286,6 +286,8 @@ def load_section_attendance(file_content, year, month, use_id):
         member_name = member_name if member_name else None
         # 勤務時間
         total_hours = values[constants.POS_ATTENDANCE_COL_TOTAL_HOURS]
+        # ＢＰ時間
+        total_hours_bp = values[constants.POS_ATTENDANCE_COL_TOTAL_HOURS_BP]
         # 勤務日数
         total_days = values[constants.POS_ATTENDANCE_COL_TOTAL_DAYS]
         total_days = total_days if total_days else None
@@ -340,6 +342,8 @@ def load_section_attendance(file_content, year, month, use_id):
             # 数値ではない場合。
             messages.append((project_member_id, member_code, member_name, constants.ERROR_INVALID_TOTAL_HOUR))
             continue
+        if total_hours_bp == "" or not re.match(r'\d+\.?\d*', str(total_hours_bp)):
+            total_hours_bp = None
 
         total_hours = common.get_attendance_total_hours(total_hours, project_member.project.attendance_type)
         if project_member.project.request_type == '03':
@@ -381,6 +385,7 @@ def load_section_attendance(file_content, year, month, use_id):
             if not has_requested:
                 # 請求書作成済みの場合は上書きしない。
                 attendance.total_hours = total_hours
+                attendance.total_hours_bp = total_hours_bp
                 attendance.extra_hours = extra_hours
                 attendance.price = price
                 common.get_object_changed_message(attendance, 'total_hours', total_hours, changed_list)
@@ -397,6 +402,7 @@ def load_section_attendance(file_content, year, month, use_id):
                                                  rate=1,
                                                  basic_price=project_member.price,
                                                  total_hours=total_hours,
+                                                 total_hours_bp=total_hours_bp,
                                                  extra_hours=extra_hours,
                                                  total_days=total_days if total_days else None,
                                                  night_days=night_days if night_days else None,

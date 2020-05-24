@@ -56,11 +56,12 @@ select distinct m.id as member_id
      , IF(ma.id is null, IFNULL(prev_ma.traffic_cost, 0), 0) as prev_traffic_cost           -- 先月の勤務交通費
      , IF(ma.id is null, IFNULL(prev_ma.allowance, 0), 0) as prev_allowance                 -- 先月の手当
      , ma.id as memberattendance_id
-     , IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp) as total_hours
+     , IFNULL(ma.total_hours, 0) as total_hours
+     , ma.total_hours_bp
      , case
            when c.is_hourly_pay or c.is_fixed_cost then 0
            when ma.id is null then 0
-           else get_overtime(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve)
+           else get_overtime(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve)
        end as extra_hours
      , IFNULL(ma.total_days, 0) as total_days
      , IFNULL(ma.night_days, 0) as night_days
@@ -91,29 +92,29 @@ select distinct m.id as member_id
            when p.is_lump = 1 and prd.id is null then 0
            else IFNULL(prd.total_price * prh.tax_rate, 0) 
        end as tax_price
-     , IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp)) + c.allowance_other), 0) as salary
+     , IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0))) + c.allowance_other), 0) as salary
      , IFNULL(ma.allowance, 0) as allowance
      , get_night_allowance(ma.night_days) as night_allowance
-     , get_overtime_cost(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime) as overtime_cost
+     , get_overtime_cost(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime) as overtime_cost
      , case c.member_type
            when 4 then get_bp_expenses(pm.id, ma.year, ma.month)
            else IFNULL(ma.expenses, 0) 
        end as expenses
      , get_employment_insurance(
            c.member_type,
-           IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp))), 0),
+           IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)))), 0),
            IFNULL(ma.allowance, 0),
            get_night_allowance(ma.night_days),
-           get_overtime_cost(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime),
+           get_overtime_cost(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime),
            IFNULL(ma.traffic_cost, 0)
        ) as employment_insurance
      , case 
            when c.member_type <> 4 then get_health_insurance(
                c.endowment_insurance,
-               IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp))), 0),
+               IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)))), 0),
                IFNULL(ma.allowance, 0),
                get_night_allowance(ma.night_days),
-               get_overtime_cost(IF(ma.total_hours_bp is null or ma.total_hours_bp = 0, IFNULL(ma.total_hours, 0), ma.total_hours_bp), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime),
+               get_overtime_cost(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime),
                IFNULL(ma.traffic_cost, 0),
                m.id,
                get_ym()
@@ -219,6 +220,7 @@ select null as member_id
      , 0 as prev_allowance
      , null as memberattendance_id
      , 0 as total_hours
+     , 0 as total_hours_bp
      , 0 as extra_hours
      , 0 as total_days
      , 0 as night_days
@@ -292,6 +294,7 @@ select null as member_id
      , 0 as prev_allowance
      , null as memberattendance_id
      , 0 as total_hours
+     , 0 as total_hours_bp
      , 0 as extra_hours
      , 0 as total_days
      , 0 as night_days

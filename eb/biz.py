@@ -427,6 +427,8 @@ def get_organization_turnover(year, month, section=None, param_dict=None, order_
                 continue
             df.set_value([basic_index], 'expenses', df.loc[basic_index]['expenses'] + df.loc[index]['salary'])
             df = df.iloc[df.index != index]
+    # ＢＰ作業時間がない場合、空白と表示する
+    df.total_hours_bp = df.total_hours_bp.fillna('')
 
     return df
 

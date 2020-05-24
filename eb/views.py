@@ -911,15 +911,15 @@ class OrganizationTurnoverView(BaseTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(OrganizationTurnoverView, self).get_context_data(**kwargs)
-        is_all = kwargs.get('is_all', False)
+        is_all = kwargs.get(b'is_all', False)
         if is_all:
             section = None
         else:
             section_id = kwargs.get('section_id', 0)
             section = get_object_or_404(models.Section, pk=section_id)
-        request = kwargs.get('request')
-        year = kwargs.get('year')
-        month = kwargs.get('month')
+        request = kwargs.get(b'request')
+        year = kwargs.get(b'year')
+        month = kwargs.get(b'month')
         prev_month = common.add_months(datetime.date(int(year), int(month), 1), -1)
         next_month = common.add_months(datetime.date(int(year), int(month), 1), 1)
         o = request.GET.get('o', None)

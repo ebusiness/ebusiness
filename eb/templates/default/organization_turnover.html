@@ -129,7 +129,7 @@
                     <th class="bk01" rowspan="2" style="width: 20px;">No</th>
                     <th class="bk01" colspan="6">基本データ</th>
                     <th class="bk02" colspan="4">案件情報</th>
-                    <th class="bk03" colspan="7">勤務情報</th>
+                    <th class="bk03" colspan="8">勤務情報</th>
                     <th class="bk04" colspan="3">売上</th>
                     <th class="bk05" colspan="9">原価</th>
                     <th class="bk06" rowspan="2">粗利</th>
@@ -155,6 +155,7 @@
                     <th class="bk03 red">ＢＰ時間</th>
                     <th class="bk03 red">勤務日数</th>
                     <th class="bk03 red">深夜日数</th>
+                    <th class="bk03 red">有休日数</th>
                     <th class="bk03 red">客先立替金</th>
                     <th class="bk03 red">立替金</th>
                     <th class="bk03 red">勤務交通費</th>
@@ -224,6 +225,8 @@
                             <td class="num {% if data_row.projectrequestdetail_id %}project_requested{% endif %}">{{ data_row.total_days|floatformat:0|intcomma }}</td>
                             <!-- 深夜日数 -->
                             <td class="num {% if data_row.projectrequestdetail_id %}project_requested{% endif %}">{{ data_row.night_days|floatformat:0|intcomma }}</td>
+                            <!-- 有休日数 -->
+                            <td class="num {% if data_row.projectrequestdetail_id %}project_requested{% endif %}">{{ data_row.paid_vacation_days|floatformat:1|intcomma }}</td>
                             <!-- 客先立替金 -->
                             <td class="num {% if data_row.projectrequestdetail_id %}project_requested{% endif %}">{{ data_row.advances_paid_client|floatformat:0|intcomma }}</td>
                             <!-- 立替金 -->
@@ -306,7 +309,7 @@
                         <td colspan="11" rowspan="3">
                             {{ data_frame|length }} 件
                         </td>
-                        <td colspan="7" style="text-align: right;">他社技術者の合計</td>
+                        <td colspan="8" style="text-align: right;">他社技術者の合計</td>
                         <td class="num">{{ summary_subcontractor.all_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.expenses_price|floatformat:0|intcomma }}</td>
@@ -330,7 +333,7 @@
                         <td class="num">{{ summary_subcontractor.income|floatformat:0|intcomma }}</td>
                     </tr>
                     <tr style="height: 20px; font-size: 12px;">
-                        <td colspan="7" style="text-align: right;">自社の合計</td>
+                        <td colspan="8" style="text-align: right;">自社の合計</td>
                         <td class="num">{{ summary_self.all_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.expenses_price|floatformat:0|intcomma }}</td>
@@ -354,7 +357,7 @@
                         <td class="num">{{ summary_self.income|floatformat:0|intcomma }}</td>
                     </tr>
                     <tr style="font-size: 12px;">
-                        <td colspan="7" style="text-align: right;">すべての合計</td>
+                        <td colspan="8" style="text-align: right;">すべての合計</td>
                         <td class="num">{{ data_frame.sum.all_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.expenses_price|floatformat:0|intcomma }}</td>

@@ -3243,6 +3243,7 @@ class MemberAttendance(BaseModel):
     extra_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name=u"残業時間")
     total_days = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"勤務日数")
     night_days = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"深夜日数")
+    paid_vacation_days = models.DecimalField(max_digits=3, decimal_places=1, blank=True, null=True, verbose_name=u"有休日数")
     advances_paid = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"立替金")
     advances_paid_client = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"客先立替金")
     traffic_cost = models.IntegerField(blank=True, null=True, editable=False, verbose_name=u"勤務交通費",

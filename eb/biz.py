@@ -429,6 +429,7 @@ def get_organization_turnover(year, month, section=None, param_dict=None, order_
             df = df.iloc[df.index != index]
     # ＢＰ作業時間がない場合、空白と表示する
     df.total_hours_bp = df.total_hours_bp.fillna('')
+    df.paid_vacation_days = df.paid_vacation_days.fillna('')
 
     return df
 

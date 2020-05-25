@@ -294,6 +294,9 @@ def load_section_attendance(file_content, year, month, use_id):
         # 深夜日数
         night_days = values[constants.POS_ATTENDANCE_COL_NIGHT_DAYS]
         night_days = night_days if night_days else None
+        # 有休日数
+        paid_vacation_days = values[constants.POS_ATTENDANCE_COL_PAID_VACATION_DAYS]
+        paid_vacation_days = paid_vacation_days if paid_vacation_days else None
         # 客先立替金
         advances_paid_client = values[constants.POS_ATTENDANCE_COL_ADVANCES_PAID_CLIENT]
         advances_paid_client = advances_paid_client if advances_paid_client else None
@@ -382,6 +385,7 @@ def load_section_attendance(file_content, year, month, use_id):
             action_flag = CHANGE
             attendance.total_days = total_days if total_days else None
             attendance.night_days = night_days if night_days else None
+            attendance.paid_vacation_days = paid_vacation_days
             if not has_requested:
                 # 請求書作成済みの場合は上書きしない。
                 attendance.total_hours = total_hours
@@ -406,6 +410,7 @@ def load_section_attendance(file_content, year, month, use_id):
                                                  extra_hours=extra_hours,
                                                  total_days=total_days if total_days else None,
                                                  night_days=night_days if night_days else None,
+                                                 paid_vacation_days=paid_vacation_days,
                                                  min_hours=project_member.min_hours,
                                                  max_hours=project_member.max_hours,
                                                  plus_per_hour=project_member.plus_per_hour,

@@ -65,6 +65,7 @@ select distinct m.id as member_id
        end as extra_hours
      , IFNULL(ma.total_days, 0) as total_days
      , IFNULL(ma.night_days, 0) as night_days
+     , ma.paid_vacation_days
      , IFNULL(ma.advances_paid_client, 0) as advances_paid_client
      , IFNULL(ma.advances_paid, 0) as advances_paid
      , IF(c.member_type = 4, 0, IFNULL(ma.traffic_cost, 0)) as traffic_cost
@@ -224,6 +225,7 @@ select null as member_id
      , 0 as extra_hours
      , 0 as total_days
      , 0 as night_days
+     , null as paid_vacation_days
      , 0 as advances_paid_client
      , 0 as advances_paid
      , 0 as traffic_cost
@@ -298,6 +300,7 @@ select null as member_id
      , 0 as extra_hours
      , 0 as total_days
      , 0 as night_days
+     , null as paid_vacation_days
      , 0 as advances_paid_client
      , 0 as advances_paid
      , 0 as traffic_cost

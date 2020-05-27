@@ -515,7 +515,13 @@ class UploadFileForm(forms.Form):
 class MemberAttendanceFormSet(forms.ModelForm):
     class Meta:
         model = models.MemberAttendance
-        exclude = ('expenses_conference', 'expenses_entertainment', 'expenses_travel', 'expenses_communication', 'expenses_tax_dues', 'expenses_expendables')
+        exclude = ('expenses_conference', 'expenses_entertainment', 'expenses_travel', 'expenses_communication', 'expenses_tax_dues', 'expenses_expendables', 'paid_vacation_days')
+        widgets = {
+            'expect_price': forms.TextInput(attrs={
+                'style': 'width: 75px;',
+                'type': 'number'
+            }),
+        }
 
     def __init__(self, *args, **kwargs):
         forms.ModelForm.__init__(self, *args, **kwargs)
@@ -575,10 +581,17 @@ class MemberAttendanceFormSet(forms.ModelForm):
                                                                                'border: 0px;',
                                                                       'readonly': 'readonly'}),
                                         label=u"減（円）")
+    carryover_hours = forms.DecimalField(max_digits=5, decimal_places=2, initial=0,
+                                         widget=forms.TextInput(
+                                             attrs={'type': 'number',
+                                                    'style': 'width: 55px;',
+                                                    'text-align': 'right',
+                                                    'step': 0.25}, ),
+                                         label=u"繰越時間")
     price = forms.IntegerField(initial=0,
                                widget=forms.TextInput(attrs={'style': 'width: 75px;',
                                                              'type': 'number'}),
-                               label=u"価格")
+                               label=u"金額")
 
 
 class MemberAttendanceFormSetHourlyPay(forms.ModelForm):

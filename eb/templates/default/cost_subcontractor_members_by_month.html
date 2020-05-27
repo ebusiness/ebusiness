@@ -270,7 +270,13 @@
                         <td class="num">{{ data_row.plus_per_hour|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_row.minus_per_hour|floatformat:0|intcomma }}</td>
                     {% endif %}
-                    <td class="num">{{ data_row.total_hours|floatformat:2|intcomma }}</td>
+                    <td class="num">
+                        {% if data_row.total_hours_bp >= 0 %}
+                            {{ data_row.total_hours_bp|floatformat:2|intcomma }}
+                        {% else %}
+                            {{ data_row.total_hours|floatformat:2|intcomma }}
+                        {% endif %}
+                    </td>
                     <td class="num {% if data_row.extra_hours < 0 %}red{% endif %}">{{ data_row.extra_hours|floatformat:2 }}</td>
                     <td class="num">{{ data_row.traffic_cost|floatformat:0|intcomma }}</td>
                     <td class="num">{{ data_row.expenses|floatformat:0|intcomma }}</td>
@@ -290,8 +296,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="num">{{ summary.total_hours|floatformat:2|intcomma }}</td>
-                <td class="num">{{ summary.extra_hours|floatformat:2|intcomma }}</td>
+                <td></td>
+                <td></td>
+{#                <td class="num">{{ summary.total_hours|floatformat:2|intcomma }}</td>#}
+{#                <td class="num">{{ summary.extra_hours|floatformat:2|intcomma }}</td>#}
                 <td class="num">{{ summary.traffic_cost|floatformat:0|intcomma }}</td>
                 <td class="num">{{ summary.expenses|floatformat:0|intcomma }}</td>
                 <td class="num">{{ summary.total_cost|floatformat:0|intcomma }}</td>

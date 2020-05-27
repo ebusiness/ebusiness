@@ -456,9 +456,16 @@ def get_cost_by_month(year, month, param_dict=None, order_list=None):
     """
     df = pd.read_sql("call sp_organization_cost('%s%s')" % (year, month), connection)
 
+    def get_total_hours(c):
+        if c['total_hours_bp'] == 0:
+            return 0
+        else:
+            return c['total_cost']
+
     # 原価合計を計算する。
     df['total_cost'] = df['salary'] + df['allowance'] + df['night_allowance'] + df['overtime_cost'] + df[
         'traffic_cost'] + df['expenses'] + df['employment_insurance'] + df['health_insurance']
+    df['total_cost'] = df.apply(get_total_hours, axis=1)
     # 粗利
     df['profit'] = df['total_price'] - df['total_cost']
     # 経費合計
@@ -1312,10 +1319,14 @@ def generate_subcontractor_request_data(subcontractor, year, month, subcontracto
                     # 時間上限
                     dict_expenses['ITEM_MAX_HOURS'] = contract.allowance_time_max
                     # 勤務時間
-                    dict_expenses['ITEM_WORK_HOURS'] = member_attendance.total_hours_bp \
-                        if member_attendance.total_hours_bp else member_attendance.total_hours
+                    total_hours = member_attendance.total_hours_bp \
+                        if member_attendance.total_hours_bp is not None else member_attendance.total_hours
+                    dict_expenses['ITEM_WORK_HOURS'] = total_hours
                     # 超過金額と控除金額
-                    extra_amount = member_attendance.get_overtime_cost(allowance_time_min=allowance_time_min)
+                    if total_hours is not None and total_hours > 0:
+                        extra_amount = member_attendance.get_overtime_cost(allowance_time_min=allowance_time_min)
+                    else:
+                        extra_amount = 0
                     # 諸経費
                     dict_expenses['ITEM_EXPENSES_TOTAL'] = member_attendance.get_bp_expenses_amount()
                     if extra_amount > 0:
@@ -1373,6 +1384,8 @@ def generate_subcontractor_request_data(subcontractor, year, month, subcontracto
                             dict_expenses['ITEM_MINUS_PER_HOUR2'] = u""
                         # 基本金額＋残業金額
                         dict_expenses['ITEM_AMOUNT_TOTAL'] = member_attendance.get_cost() + member_attendance.get_overtime_cost(allowance_time_min=allowance_time_min)
+                    if total_hours is None or total_hours == 0:
+                        dict_expenses['ITEM_AMOUNT_TOTAL'] = 0
                     # 備考
                     dict_expenses['ITEM_COMMENT'] = member_attendance.comment \
                         if member_attendance and member_attendance.comment else u""

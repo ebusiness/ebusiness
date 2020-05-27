@@ -1592,10 +1592,10 @@ class CostSubcontractorMembersByMonthView(BaseTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CostSubcontractorMembersByMonthView, self).get_context_data(**kwargs)
-        request = kwargs.get('request')
-        year = kwargs.get('year')
-        month = kwargs.get('month')
-        subcontractor_id = kwargs.get('subcontractor_id', None)
+        request = kwargs.get(b'request')
+        year = kwargs.get(b'year')
+        month = kwargs.get(b'month')
+        subcontractor_id = kwargs.get(b'subcontractor_id', None)
         param_dict, params = common.get_request_params(request.GET)
         o = request.GET.get('o', None)
         dict_order = common.get_ordering_dict(o, ['first_name', 'company_name', 'project_name'])
@@ -1635,7 +1635,6 @@ class CostSubcontractorMembersByMonthView(BaseTemplateView):
             object_list = paginator.page(1)
         except EmptyPage:
             object_list = paginator.page(paginator.num_pages)
-
 
         bundle_project_list = biz_turnover.get_bundle_project(subcontractor_id, year, month)
 

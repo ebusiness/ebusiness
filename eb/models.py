@@ -3306,7 +3306,7 @@ class MemberAttendance(BaseModel):
         :return:
         """
         attendance_type = Config.get_bp_attendance_type()
-        total_hours = self.total_hours_bp if self.total_hours_bp else self.total_hours
+        total_hours = self.total_hours_bp if self.total_hours_bp is not None else self.total_hours
         return common.get_attendance_total_hours(total_hours, attendance_type)
 
     def get_cost(self):

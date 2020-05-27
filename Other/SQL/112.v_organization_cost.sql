@@ -61,6 +61,7 @@ select distinct m.id as member_id
      , case
            when c.is_hourly_pay or c.is_fixed_cost then 0
            when ma.id is null then 0
+           when ma.total_hours_bp = 0 then 0
            else get_overtime(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve)
        end as extra_hours
      , IFNULL(ma.total_days, 0) as total_days

@@ -79,7 +79,6 @@ class EbMail(object):
             backend.port = int(port[0])
             backend.username = str(username[0])
             backend.password = str(password[0])
-            backend.use_tls = True
             return backend
         except Exception as ex:
             logger.error(unicode(ex))

@@ -74,11 +74,11 @@ class EbMail(object):
                      constants.CONFIG_ADMIN_EMAIL_ADDRESS, constants.CONFIG_ADMIN_EMAIL_PASSWORD]
                 )
                 host, port, username, password = cursor.fetchall()
-            backend = get_connection()
-            backend.host = str(host[0])
-            backend.port = int(port[0])
-            backend.username = str(username[0])
-            backend.password = str(password[0])
+            backend = get_connection(host=str(host[0]), port=int(port[0]), username=str(username[0]), password=str(password[0]), use_tls=True)
+            #backend.host = str(host[0])
+            #backend.port = int(port[0])
+            #backend.username = str(username[0])
+            #backend.password = str(password[0])
             return backend
         except Exception as ex:
             logger.error(unicode(ex))

@@ -590,6 +590,7 @@ class Subcontractor(AbstractCompany):
             projectmember__end_date__gte=first_day,
             projectmember__is_deleted=False,
             bpcontract__company_id=self.pk,
+            bpcontract__is_deleted=False,
         )
         return members
 
@@ -625,7 +626,7 @@ class Subcontractor(AbstractCompany):
         for member in members:
             section = member.get_section(first_day)
             if section:
-                division = section.get_root_section()
+                division = section.get_division()
                 if division not in organizations:
                     try:
                         subcontractor_request = SubcontractorRequest.objects.get(
@@ -1050,6 +1051,14 @@ class Section(BaseModel):
         """
         if self.parent:
             return self.parent.get_root_section()
+        else:
+            return self
+
+    def get_division(self):
+        if self.org_type == '01':
+            return self
+        elif self.parent:
+            return self.parent.get_division()
         else:
             return self
 

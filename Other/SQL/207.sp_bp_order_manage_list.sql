@@ -65,6 +65,9 @@ select distinct m.id as member_id
                                                     and s1.year = in_year
                                                     and s1.month = in_month
                                              )
+ order by department.name
+        , p.name
+        , s.name
 ;
 
 END

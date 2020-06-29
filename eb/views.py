@@ -1600,6 +1600,8 @@ class CostSubcontractorMembersByMonthView(BaseTemplateView):
         o = request.GET.get('o', None)
         dict_order = common.get_ordering_dict(o, ['first_name', 'company_name', 'project_name'])
         order_list = common.get_ordering_list(o)
+        if not order_list:
+            order_list = ['division_name', 'section_name', 'subsection_name', 'project_name']
 
         data_frame = biz_turnover.get_bp_members_cost(year, month, subcontractor_id, param_dict, order_list)
         summary = data_frame.sum()

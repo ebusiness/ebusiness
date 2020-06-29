@@ -217,8 +217,8 @@
                 <th>事業部</th>
                 <th>部署</th>
                 <th>課</th>
-                <th style="width: 150px;">{% create_single_order_display "協力会社" "company_name" %}</th>
-                <th style="width: 180px;">{% create_single_order_display "案件" "project_name" %}</th>
+                <th style="width: 120px;">{% create_single_order_display "協力会社" "company_name" %}</th>
+                <th style="width: 150px;">{% create_single_order_display "案件" "project_name" %}</th>
                 <th>基本給</th>
                 <th>基準時間</th>
                 <th>増</th>
@@ -247,13 +247,13 @@
                     <td>{{ data_row.section_name }}</td>
                     <td>{{ data_row.subsection_name }}</td>
                     <td>
-                        <div style="width: 150px; overflow: hidden; white-space: nowrap;">
+                        <div style="width: 120px; overflow: hidden; white-space: nowrap;" title="{{ data_row.company_name }}">
                             {{ data_row.company_name }}
                         </div>
                     </td>
                     <td>
                         {% if data_row.project_id %}
-                            <div style="width: 180px; overflow: hidden; white-space: nowrap;">
+                            <div style="width: 150px; overflow: hidden; white-space: nowrap;" title="{{ data_row.project_name }}">
                                 <a href="{% url 'project_detail' data_row.project_id %}">{{ data_row.project_name }}</a>
                             </div>
                         {% else %}

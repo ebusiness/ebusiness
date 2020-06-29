@@ -1148,9 +1148,9 @@ def data_frame_filter(df, param_dict=None, order_list=None):
             else:
                 df = df[df[k].str.contains(v, na=False)]
     if order_list:
-        name = order_list[0].strip('-')
-        ascending = not order_list[0].startswith('-')
-        df = df.sort_values(by=name, ascending=ascending)
+        names = [i.strip('-') for i in order_list]
+        ascending = [not i.startswith('-') for i in order_list]
+        df = df.sort_values(by=names, ascending=ascending)
     return df
 
 

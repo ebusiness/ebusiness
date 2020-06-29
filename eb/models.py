@@ -517,7 +517,7 @@ class BankInfo(BaseModel):
     branch_kana = models.CharField(max_length=40, blank=True, null=True, verbose_name=u"支店カナ",)
     account_type = models.CharField(blank=False, null=False, max_length=1, choices=constants.CHOICE_ACCOUNT_TYPE,
                                     verbose_name=u"預金種類")
-    account_number = models.CharField(blank=False, null=False, max_length=7, verbose_name=u"口座番号")
+    account_number = models.CharField(blank=False, null=False, max_length=8, verbose_name=u"口座番号")
     account_holder = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"口座名義")
 
     class Meta:
@@ -762,7 +762,7 @@ class SubcontractorBankInfo(BaseModel):
     branch_name = models.CharField(blank=False, null=False, max_length=20, verbose_name=u"支店名称")
     account_type = models.CharField(blank=False, null=False, max_length=1, choices=constants.CHOICE_ACCOUNT_TYPE,
                                     verbose_name=u"預金種類")
-    account_number = models.CharField(blank=False, null=False, max_length=7, verbose_name=u"口座番号")
+    account_number = models.CharField(blank=False, null=False, max_length=8, verbose_name=u"口座番号")
     account_holder = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"口座名義")
 
     class Meta:
@@ -2495,7 +2495,7 @@ class ProjectRequestHeading(models.Model):
     branch_name = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"支店名称")
     account_type = models.CharField(blank=True, null=True, max_length=1, choices=constants.CHOICE_ACCOUNT_TYPE,
                                     verbose_name=u"預金種類")
-    account_number = models.CharField(blank=True, null=True, max_length=7, verbose_name=u"口座番号")
+    account_number = models.CharField(blank=True, null=True, max_length=8, verbose_name=u"口座番号")
     account_holder = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"口座名義")
     created_dt = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u"作成日時")
     updated_dt = models.DateTimeField(auto_now=True, blank=True, null=True, verbose_name=u"更新日時")
@@ -3104,7 +3104,7 @@ class SubcontractorRequestHeading(models.Model):
     branch_name = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"支店名称")
     account_type = models.CharField(blank=True, null=True, max_length=1, choices=constants.CHOICE_ACCOUNT_TYPE,
                                     verbose_name=u"預金種類")
-    account_number = models.CharField(blank=True, null=True, max_length=7, verbose_name=u"口座番号")
+    account_number = models.CharField(blank=True, null=True, max_length=8, verbose_name=u"口座番号")
     account_holder = models.CharField(blank=True, null=True, max_length=20, verbose_name=u"口座名義")
 
     class Meta:

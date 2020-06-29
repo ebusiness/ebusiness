@@ -1746,7 +1746,16 @@ def get_edi_project():
     try:
         return models.Project.raw_objects.get(is_deleted=True, name='EDI')
     except (ObjectDoesNotExist, MultipleObjectsReturned):
-        raise errors.CustomException(u"ＥＤＩの関連会社が作成されていません。")
+        client = models.Client.raw_objects.create(
+            name=u'EDI調整金額',
+            is_deleted=True,
+        )
+        return models.Project.raw_objects.create(
+            name='EDI',
+            client=client,
+            status=4,
+            is_deleted=True,
+        )
 
 
 @transaction.atomic

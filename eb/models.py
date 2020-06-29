@@ -1900,6 +1900,7 @@ class Client(AbstractCompany):
     deleted_date = models.DateTimeField(blank=True, null=True, editable=False, verbose_name=u"削除年月日")
 
     objects = PublicManager(is_deleted=False)
+    raw_objects = models.Manager()
 
     class Meta:
         ordering = ['name']

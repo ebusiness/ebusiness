@@ -1196,7 +1196,7 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
 
     start_row = constants.POS_ATTENDANCE_START_ROW
     count = data_frame.shape[0]
-    set_openpyxl_styles(sheet, 'B5:AP%s' % (start_row + count + 2,), 5)
+    set_openpyxl_styles(sheet, 'B5:AQ%s' % (start_row + count + 2,), 5)
     distinct_projects = []
     for i, row_data in data_frame.iterrows():
         if row_data.project_name not in distinct_projects:
@@ -1262,38 +1262,40 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
             sheet.cell(row=start_row, column=24).value = row_data.expenses_price
             # 月給
             sheet.cell(row=start_row, column=25).value = row_data.salary
+            # 出向コスト
+            sheet.cell(row=start_row, column=26).value = row_data.loan_cost
             # 手当
-            sheet.cell(row=start_row, column=26).value = row_data.allowance
+            sheet.cell(row=start_row, column=27).value = row_data.allowance
             # 深夜手当
-            sheet.cell(row=start_row, column=27).value = row_data.night_allowance
+            sheet.cell(row=start_row, column=28).value = row_data.night_allowance
             # 残業／控除
-            sheet.cell(row=start_row, column=28).value = row_data.overtime_cost
+            sheet.cell(row=start_row, column=29).value = row_data.overtime_cost
             # 交通費(原価)
-            sheet.cell(row=start_row, column=29).value = row_data.traffic_cost
+            sheet.cell(row=start_row, column=30).value = row_data.traffic_cost
             # 経費(原価)
-            sheet.cell(row=start_row, column=30).value = row_data.expenses
+            sheet.cell(row=start_row, column=31).value = row_data.expenses
             # 雇用／労災(原価)
-            sheet.cell(row=start_row, column=31).value = row_data.employment_insurance
+            sheet.cell(row=start_row, column=32).value = row_data.employment_insurance
             # 健康／厚生(原価)
-            sheet.cell(row=start_row, column=32).value = row_data.health_insurance
+            sheet.cell(row=start_row, column=33).value = row_data.health_insurance
             # 会議費
-            sheet.cell(row=start_row, column=35).value = row_data.expenses_conference
+            sheet.cell(row=start_row, column=36).value = row_data.expenses_conference
             # 交際費
-            sheet.cell(row=start_row, column=36).value = row_data.expenses_entertainment
+            sheet.cell(row=start_row, column=37).value = row_data.expenses_entertainment
             # 旅費交通費
-            sheet.cell(row=start_row, column=37).value = row_data.expenses_travel
+            sheet.cell(row=start_row, column=38).value = row_data.expenses_travel
             # 通信費
-            sheet.cell(row=start_row, column=38).value = row_data.expenses_communication
+            sheet.cell(row=start_row, column=39).value = row_data.expenses_communication
             # 租税公課
-            sheet.cell(row=start_row, column=39).value = row_data.expenses_tax_dues
+            sheet.cell(row=start_row, column=40).value = row_data.expenses_tax_dues
             # 消耗品
-            sheet.cell(row=start_row, column=40).value = row_data.expenses_expendables
+            sheet.cell(row=start_row, column=41).value = row_data.expenses_expendables
         elif row_data.prev_traffic_cost > 0:
             # 勤務情報が入力してない場合、先月の交通費を使用する。
             # 勤務交通費
             sheet.cell(row=start_row, column=21).value = row_data.prev_traffic_cost
             # 手当
-            sheet.cell(row=start_row, column=26).value = row_data.prev_allowance
+            sheet.cell(row=start_row, column=27).value = row_data.prev_allowance
         elif not pd.isnull(row_data.is_lump) and row_data.is_lump == 1:
             # 一括案件の場合
 
@@ -1330,6 +1332,7 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
     sheet.cell(row=start_row, column=39).value = '=SUMIF(I5:I{0}, "=他社技術者", AM5:AM{0})'.format(count + 4)
     sheet.cell(row=start_row, column=40).value = '=SUMIF(I5:I{0}, "=他社技術者", AN5:AN{0})'.format(count + 4)
     sheet.cell(row=start_row, column=41).value = '=SUMIF(I5:I{0}, "=他社技術者", AO5:AO{0})'.format(count + 4)
+    sheet.cell(row=start_row, column=42).value = '=SUMIF(I5:I{0}, "=他社技術者", AP5:AP{0})'.format(count + 4)
     sheet.cell(row=start_row + 1, column=21).value = "自社の合計"
     sheet.cell(row=start_row + 1, column=22).value = '=SUMIF(I5:I{0}, "<>他社技術者", V5:V{0})'.format(count + 4)
     sheet.cell(row=start_row + 1, column=23).value = '=SUMIF(I5:I{0}, "<>他社技術者", W5:W{0})'.format(count + 4)
@@ -1351,6 +1354,7 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
     sheet.cell(row=start_row + 1, column=39).value = '=SUMIF(I5:I{0}, "<>他社技術者", AM5:AM{0})'.format(count + 4)
     sheet.cell(row=start_row + 1, column=40).value = '=SUMIF(I5:I{0}, "<>他社技術者", AN5:AN{0})'.format(count + 4)
     sheet.cell(row=start_row + 1, column=41).value = '=SUMIF(I5:I{0}, "<>他社技術者", AO5:AO{0})'.format(count + 4)
+    sheet.cell(row=start_row + 1, column=42).value = '=SUMIF(I5:I{0}, "<>他社技術者", AP5:AP{0})'.format(count + 4)
     sheet.cell(row=start_row + 2, column=21).value = "全ての合計"
     sheet.cell(row=start_row + 2, column=22).value = "=SUM(V5:v%s)" % (count + 4)
     sheet.cell(row=start_row + 2, column=23).value = "=SUM(W5:W%s)" % (count + 4)
@@ -1372,12 +1376,13 @@ def generate_organization_turnover(user, template_path, data_frame, year=None, m
     sheet.cell(row=start_row + 2, column=39).value = "=SUM(AM5:AM%s)" % (count + 4)
     sheet.cell(row=start_row + 2, column=40).value = "=SUM(AN5:AN%s)" % (count + 4)
     sheet.cell(row=start_row + 2, column=41).value = "=SUM(AO5:AO%s)" % (count + 4)
+    sheet.cell(row=start_row + 2, column=42).value = "=SUM(AP5:AP%s)" % (count + 4)
     # 案件集計
     sheet = book['案件集計']
     for i, project_name in enumerate(distinct_projects):
         sheet.cell(row=5 + i, column=2).value = project_name
         for j, c in enumerate(('V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI',
-                               'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP')):
+                               'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ')):
             sheet.cell(row=5 + i, column=3 + j).value = \
                 "=SUMIF(Sheet1!J5:J{end_row},案件集計!B{row},Sheet1!{col}5:{col}{end_row})".format(
                     end_row=start_row - 1,

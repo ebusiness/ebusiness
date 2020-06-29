@@ -915,7 +915,7 @@ class OrganizationTurnoverView(BaseTemplateView):
         if is_all:
             section = None
         else:
-            section_id = kwargs.get('section_id', 0)
+            section_id = kwargs.get(b'section_id', 0)
             section = get_object_or_404(models.Section, pk=section_id)
         request = kwargs.get(b'request')
         year = kwargs.get(b'year')

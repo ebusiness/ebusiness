@@ -401,35 +401,43 @@ def get_organization_turnover(year, month, section=None, param_dict=None, order_
         if related_row.empty:
             # 完全出向の場合は何もしない。
             continue
-        # # ＥＢ契約の月給を再設定する。
-        # df.set_value(index, 'salary', df.loc[index]['salary'] + related_row.iloc[0].salary)
         # ＢＰ契約に値を再設定する。
         df.set_value(related_row.index[0], 'is_loan', row.is_loan)
-        df.set_value(related_row.index[0], 'salary', df.loc[index]['salary'] + related_row.iloc[0].salary)
+        # 出向コスト項目を追加するので、合計がいらない
+        # df.set_value(related_row.index[0], 'salary', df.loc[index]['salary'] + related_row.iloc[0].salary)
         df.set_value(related_row.index[0], 'allowance', df.loc[index]['allowance'] + related_row.iloc[0].allowance)
         df.set_value(related_row.index[0], 'night_allowance', df.loc[index]['night_allowance'] + related_row.iloc[0].night_allowance)
         df.set_value(related_row.index[0], 'expenses', df.loc[index]['expenses'] + related_row.iloc[0].expenses)
         df.set_value(related_row.index[0], 'employment_insurance', df.loc[index]['employment_insurance'] + related_row.iloc[0].employment_insurance)
         df.set_value(related_row.index[0], 'health_insurance', df.loc[index]['health_insurance'] + related_row.iloc[0].health_insurance)
+        df.set_value(related_row.index[0], 'loan_cost', df.loc[index]['salary'])
+        df.set_value(related_row.index[0], 'total_cost', df.loc[index]['total_cost'] + related_row.iloc[0].total_cost)
         # ＥＢの出向契約は非表示
-        df = df.iloc[df.index!=index]
+        df = df.iloc[df.index != index]
     # 重複レコードを洗い出す。
     # 営業支援料金として一括に振り替えで、注文書作成する必要なので、ＢＰ契約を追加することになる。
-    duplicated_df = df[df.projectmember_id.duplicated(keep=False)]
-    duplicated_index = duplicated_df.groupby('projectmember_id').apply(lambda x: list(x.index))
-    for pm_id, rows in duplicated_index.iteritems():
-        basic_row = df.loc[(df.projectmember_id == pm_id) & (df.member_type != 4)]
-        if basic_row.empty:
-            continue
-        basic_index = basic_row.iloc[0].name
-        for index in rows:
-            if index == basic_index:
-                continue
-            df.set_value([basic_index], 'expenses', df.loc[basic_index]['expenses'] + df.loc[index]['salary'])
-            df = df.iloc[df.index != index]
+    # duplicated_df = df[df.projectmember_id.duplicated(keep=False)]
+    # duplicated_index = duplicated_df.groupby('projectmember_id').apply(lambda x: list(x.index))
+    # for pm_id, rows in duplicated_index.iteritems():
+    #     basic_row = df.loc[(df.projectmember_id == pm_id) & (df.member_type != 4)]
+    #     if basic_row.empty:
+    #         continue
+    #     basic_index = basic_row.iloc[0].name
+    #     for index in rows:
+    #         if index == basic_index:
+    #             continue
+    #         df.set_value([basic_index], 'expenses', df.loc[basic_index]['expenses'] + df.loc[index]['salary'])
+    #         df = df.iloc[df.index != index]
     # ＢＰ作業時間がない場合、空白と表示する
     df.total_hours_bp = df.total_hours_bp.fillna('')
     df.paid_vacation_days = df.paid_vacation_days.fillna('')
+    # 粗利
+    df['profit'] = df['total_price'] - df['total_cost']
+    # 経費合計
+    df['expenses_total'] = df['expenses_conference'] + df['expenses_entertainment'] + df['expenses_travel'] + df[
+        'expenses_communication'] + df['expenses_tax_dues'] + df['expenses_expendables']
+    # 営業利益
+    df['income'] = df['total_price'] - df['total_cost'] - df['expenses_total']
 
     return df
 

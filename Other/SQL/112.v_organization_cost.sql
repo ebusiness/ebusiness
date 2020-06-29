@@ -71,30 +71,35 @@ select distinct m.id as member_id
      , IFNULL(ma.advances_paid, 0) as advances_paid
      , IF(c.member_type = 4, 0, IFNULL(ma.traffic_cost, 0)) as traffic_cost
      , case 
+           when c.is_loan = 1 then 0  -- 出向の場合、案件の単価はBP契約に計算する
            when p.is_lump = 1 and prd.id is null and pm.id = (select min(s1.id) from eb_projectmember s1 where s1.project_id = p.id and s1.is_deleted = 0 and s1.status = 2)
                then ifnull((select t1.amount from eb_projectrequest t1 where t1.project_id = p.id and concat(t1.year, t1.month) = get_ym()), 0)         -- 要員アサインした一括案件の場合、売上は１つの要員に表示され、ほかに０にする。
            when p.is_lump = 1 and prd.id is null then 0
            else IFNULL(prd.total_price + prd.expenses_price + prd.total_price * prh.tax_rate, 0) 
        end as all_price             -- 売上（税込）
      , case
+           when c.is_loan = 1 then 0  -- 出向の場合、案件の単価はBP契約に計算する
            when p.is_lump = 1 and prd.id is null and pm.id = (select min(s1.id) from eb_projectmember s1 where s1.project_id = p.id and s1.is_deleted = 0 and s1.status = 2)
                then ifnull((select t1.turnover_amount from eb_projectrequest t1 where t1.project_id = p.id and concat(t1.year, t1.month) = get_ym()), 0)    -- 要員アサインした一括案件の場合
            when p.is_lump = 1 and prd.id is null then 0
            else IFNULL(prd.total_price, 0) 
        end as total_price           -- 売上（税抜）
      , case
+           when c.is_loan = 1 then 0  -- 出向の場合、案件の単価はBP契約に計算する
            when p.is_lump = 1 and prd.id is null and pm.id = (select min(s1.id) from eb_projectmember s1 where s1.project_id = p.id and s1.is_deleted = 0 and s1.status = 2)
                then ifnull((select t1.expenses_amount from eb_projectrequest t1 where t1.project_id = p.id and concat(t1.year, t1.month) = get_ym()), 0)    -- 要員アサインした一括案件の場合
            when p.is_lump = 1 and prd.id is null then 0
            else IFNULL(prd.expenses_price, 0) 
        end as expenses_price        -- 売上（経費）
      , case
+           when c.is_loan = 1 then 0  -- 出向の場合、案件の単価はBP契約に計算する
            when p.is_lump = 1 and prd.id is null and pm.id = (select min(s1.id) from eb_projectmember s1 where s1.project_id = p.id and s1.is_deleted = 0 and s1.status = 2)
                then ifnull((select t1.tax_amount from eb_projectrequest t1 where t1.project_id = p.id and concat(t1.year, t1.month) = get_ym()), 0)     -- 要員アサインした一括案件の場合
            when p.is_lump = 1 and prd.id is null then 0
            else IFNULL(prd.total_price * prh.tax_rate, 0) 
        end as tax_price
      , IFNULL(IF(c.is_hourly_pay = 0, c.cost, c.cost * get_attendance_total_hours(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0))) + c.allowance_other), 0) as salary
+     , null as loan_cost  -- 出向コスト
      , IFNULL(ma.allowance, 0) as allowance
      , get_night_allowance(ma.night_days) as night_allowance
      , get_overtime_cost(ifnull(ma.total_hours_bp, IFNULL(ma.total_hours, 0)), IFNULL(bp_h.allowance_time_min, c.allowance_time_min), c.allowance_time_max, c.is_hourly_pay, c.is_fixed_cost, p.is_reserve, c.allowance_absenteeism, c.allowance_overtime) as overtime_cost
@@ -235,6 +240,7 @@ select null as member_id
      , pr.expenses_amount as expenses_price
      , pr.tax_amount as tax_price
      , 0 as salary
+     , null as loan_cost  -- 出向コスト
      , 0 as allowance
      , 0 as night_allowance
      , 0 as overtime_cost
@@ -310,6 +316,7 @@ select null as member_id
      , 0 as expenses_price
      , 0 as tax_price
      , lc.allowance_base as salary
+     , null as loan_cost  -- 出向コスト
      , 0 as allowance
      , 0 as night_allowance
      , 0 as overtime_cost

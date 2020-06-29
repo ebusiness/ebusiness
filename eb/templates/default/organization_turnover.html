@@ -131,7 +131,7 @@
                     <th class="bk02" colspan="4">案件情報</th>
                     <th class="bk03" colspan="8">勤務情報</th>
                     <th class="bk04" colspan="3">売上</th>
-                    <th class="bk05" colspan="9">原価</th>
+                    <th class="bk05" colspan="10">原価</th>
                     <th class="bk06" rowspan="2">粗利</th>
                     <!--経費（原価ではない）-->
                     <th class="bk07" colspan="7">経費</th>
@@ -164,6 +164,7 @@
                     <th class="bk04">税別</th>
                     <th class="bk04">経費</th>
                     <th class="bk05">月給</th>
+                    <th class="bk05">出向コスト</th>
                     <th class="bk05 red">手当</th>
                     <th class="bk05">深夜手当</th>
                     <th class="bk05">残業／控除</th>
@@ -246,6 +247,8 @@
                                 <td class="num {% if data_row.projectrequestdetail_id %}project_requested{% endif %}">{{ data_row.expenses_price|floatformat:0|intcomma }}</td>
                                 <!-- 原価（月給） -->
                                 <td class="num">{{ data_row.salary|floatformat:0|intcomma }}</td>
+                                <!-- 原価（出向コスト） -->
+                                <td class="num">{{ data_row.loan_cost|floatformat:0|intcomma }}</td>
                                 <!-- 原価（手当） -->
                                 {% if data_row.prev_allowance %}
                                     <td class="num prev_month_data">{{ data_row.prev_allowance|default:''|intcomma }}</td>
@@ -266,7 +269,7 @@
                                 <td class="num">{{ data_row.health_insurance|floatformat:0|intcomma }}</td>
                                 <!-- 原価（原価合計） -->
                                 <td class="num">{{ data_row.total_cost|floatformat:0|intcomma }}</td>
-                                <!-- 原価（利益） -->
+                                <!-- 原価（粗利） -->
                                 <td class="num {% if data_row.profit < 0 %}red{% endif %}">{{ data_row.profit|floatformat:0|intcomma }}</td>
                                 <!--経費（原価ではない）-->
                                 <td class="num">{{ data_row.expenses_conference|floatformat:0|intcomma }}</td>
@@ -281,6 +284,7 @@
                                 <td class="{% if data_row.projectrequestdetail_id %}project_requested{% endif %}" style="color: lightblue;">******</td>
                                 <td class="{% if data_row.projectrequestdetail_id %}project_requested{% endif %}" style="color: lightblue;">******</td>
                                 <td class="{% if data_row.projectrequestdetail_id %}project_requested{% endif %}" style="color: lightblue;">******</td>
+                                <td style="color: lightblue;">******</td>
                                 <td style="color: lightblue;">******</td>
                                 <td style="color: lightblue;">******</td>
                                 <td style="color: lightblue;">******</td>
@@ -314,6 +318,7 @@
                         <td class="num">{{ summary_subcontractor.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.expenses_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.salary|floatformat:0|intcomma }}</td>
+                        <td class="num">{{ summary_subcontractor.loan_cost|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.night_allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_subcontractor.overtime_cost|floatformat:0|intcomma }}</td>
@@ -338,6 +343,7 @@
                         <td class="num">{{ summary_self.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.expenses_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.salary|floatformat:0|intcomma }}</td>
+                        <td class="num">{{ summary_self.loan_cost|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.night_allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ summary_self.overtime_cost|floatformat:0|intcomma }}</td>
@@ -362,6 +368,7 @@
                         <td class="num">{{ data_frame.sum.total_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.expenses_price|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.salary|floatformat:0|intcomma }}</td>
+                        <td class="num">{{ data_frame.sum.loan_cost|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.night_allowance|floatformat:0|intcomma }}</td>
                         <td class="num">{{ data_frame.sum.overtime_cost|floatformat:0|intcomma }}</td>

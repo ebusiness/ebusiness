@@ -204,6 +204,10 @@ def holiday_name(year=None, month=None, day=None, date=None):
         if date.year >= 2003:
             if int((date.day - 1) / 7) == 2 and date.weekday() == MONDAY:
                 name = '海の日'
+            elif date.year == 2020 and date.day == 24:
+                name = 'スポーツの日'
+            elif date.year == 2021 and date.day == 23:
+                name = 'スポーツの日'
         elif date.year >= 1996 and date.day == 20:
             name = '海の日'
     # 8月
@@ -225,7 +229,7 @@ def holiday_name(year=None, month=None, day=None, date=None):
                 name = '敬老の日'
     # 10月
     elif date.month == 10:
-        if date.year >= 2000:
+        if date.year >= 2000 and date.year != 2020 and date.year != 2021:
             if int((date.day - 1) / 7) == 1 and date.weekday() == MONDAY:
                 name = '体育の日'
         elif date.year >= 1966 and date.day == 10:

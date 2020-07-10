@@ -90,7 +90,7 @@
                            onclick="return confirm('既に作成済みなので、上書きしてもよろしいですか？')">
                             再作成</a>
                     {% else %}
-                        <a href="javascript:show_dialog('bp_order_gen');$('#id_publish_date').datepicker();" target="_blank">注文書新規作成</a>
+                        <a href="javascript:show_dialog('bp_order_gen');$('#id_publish_date').datepicker();">注文書新規作成</a>
                         <div id="bp_order_gen" class="dialog" style="overflow-y: hidden;">
                             <form method="get" action="{% url 'download_bp_lump_order' bp_lump_contract.pk %}" target="_blank">
                                 <div style="padding: 5px 0px;">

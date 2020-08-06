@@ -1619,7 +1619,8 @@ class CostSubcontractorMembersByMonthView(BaseTemplateView):
             sections = subcontractor.get_request_sections(year, month)
             subcontractor_requests = subcontractor.subcontractorrequest_set.filter(year=year, month=month)
             has_mail_preview = len(sections) == subcontractor_requests.count()
-            deadline = common.get_pay_notify_deadline(year, month)
+            # deadline = common.get_pay_notify_deadline(year, month)
+            deadline = year + '-' + month + '-' + '15'
             mail_group = models.MailGroup.get_subcontractor_pay_notify()
             mail_title = mail_group.get_mail_title(deadline=deadline, month=month)
             mail_body = mail_group.get_mail_body(

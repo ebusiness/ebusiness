@@ -641,7 +641,7 @@ class Subcontractor(AbstractCompany):
                     ret_list.append((division, subcontractor_request))
         # 一括請求書
         for department in self.get_lump_departments(first_day):
-            division = department.get_root_section()
+            division = department.get_division()
             if division and division.pk not in [org.pk for org, r in ret_list]:
                 try:
                     subcontractor_request = SubcontractorRequest.objects.get(

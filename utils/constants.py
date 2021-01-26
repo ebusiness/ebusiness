@@ -199,6 +199,7 @@ CHOICE_PROJECT_ROLE = (
 CHOICE_POSITION = (
     (Decimal('1.0'), "代表取締役"),
     (Decimal('1.1'), "取締役"),
+    (Decimal('2.0'), "本部長"),
     (Decimal('3.0'), "事業部長"),
     (Decimal('3.1'), "副事業部長"),
     (Decimal('4.0'), "部長"),
